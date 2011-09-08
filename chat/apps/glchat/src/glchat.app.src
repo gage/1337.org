@@ -1,0 +1,23 @@
+{application, glchat,
+ [
+  {description, ""},
+  {vsn, "2"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  lager,
+                  crypto,
+                  gproc,
+                  erlmongo,
+                  cowboy,
+                  apns
+                 ]},
+  {mod, { glchat_app, []}},
+  {env, []},
+
+  {agner, [
+    {requires, ["rebar", "gproc", "jsonerl", "erlmongo", "gen_smtp", "erlydtl"]}
+  ]}
+
+ ]}.

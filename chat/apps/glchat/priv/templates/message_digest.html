@@ -1,0 +1,87 @@
+<html>
+<head>
+<title>Message Digest</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body bgcolor="#FFFFFF" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10" alink="#0186e3" vlink="#0186e3" link="#0186e3" text="#533c2a">
+<center>
+	<table id="___01" width="600" height="499" border="0" cellpadding="0" cellspacing="0">
+		<!--  
+		<tr>
+			<td width="600" height="25" colspan="3" align="right"><a href="#"><b><font size="2" face="Arial, Helvetica, sans-serif" color="#0186e3">View the text version of email</font></b></a></td>
+		</tr>
+		-->
+		<tr>
+			<td width="1" height="474" rowspan="5" bgcolor="#987f61"></td>
+			<td width="598" height="1" bgcolor="#987f61"></td>
+			<td width="1" height="474" rowspan="5" bgcolor="#987f61"></td>
+		</tr>
+		<tr>
+			<td width="598" height="46"><img src="http://gulu.com/static/images/mail/logo.gif" width="598" height="46" alt="" /></td>
+		</tr>
+		<tr>
+			<td width="598" height="29" bgcolor="#987f61" align="center">
+				<font size="3" face="Lucida Sans Unicode, Lucida Grande, sans-serif" color="#fcf6ea">
+					<b>New Messages</b>
+				</font>
+			</td>
+		</tr>
+		<tr>
+			<td width="598" height="369" align="center" valign="top">
+				<table>
+					<tr>
+						<td height="90" valign="middle" align="center">
+							<font size="3" face="Lucida Sans Unicode, Lucida Grande, sans-serif" color="#533c2a">
+							
+							 
+								<b>
+								<!-- Upper Row -->
+								
+                                {% ifnotequal title notgiven %}
+								<p>The following chats were added to the chat for {{ title }}</p>
+                                {% endifnotequal %}
+                                {% ifnotequal url notgiven %}
+								<p>Click <a href="{{ url }}?iid={{ sha }}">here</a> to join the chat!</p>
+								{% endifnotequal %}
+								</b>
+								
+							</font>
+						</td>
+					</tr>
+				</table>
+				 
+				<img src="http://gulu.com/static/images/mail/line.gif" width="577" height="1" alt="" />
+				
+				<font face="Arial, Helvetica, sans-serif">
+					<table cellpadding="3">
+						<tr>
+							<td colspan="2" height="20">&nbsp;</td>
+						</tr>
+						
+						{% for message in messages %}
+						
+						<tr>
+							<td align="right" valign="top"><b><font size="2" color="#988162">{{ message.sender }} :</font></b></td>
+							<td width="200" valign="top"><font size="2" color="#523d2a">{{ message.content }}</font></td>
+						</tr>
+					  	
+ 						{% endfor %}
+						
+						
+					    
+						
+						
+						
+					</table>
+				</font>
+			</td>
+		</tr>
+		<tr>
+			<td width="598" height="29" bgcolor="#987f61" align="center">
+				<font face="Arial, Helvetica, sans-serif" color="#ffffff" size="2">Sent via</font> <a href="http://gulu.com/"><b><font face="Arial, Helvetica, sans-serif" color="#ffffff" size="2">gulu.com</font></b></a>
+			</td>
+		</tr>
+	</table>
+</center>
+</body>
+</html>

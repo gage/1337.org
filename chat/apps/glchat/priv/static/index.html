@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Chat Sandbox</title>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.1.min.js"></script>
+  <script type="text/javascript" src="/static/jquery.comet.js"></script>
+  <script type="text/javascript" src="/static/jquery.glchat.js"></script>
+
+  <script type="text/javascript">
+   $(function() {
+     $(".glchat").glchat();
+     $.fn.glchat.startComet();
+   });
+
+   var gParticipantUUID = "49a2fe73-2152-4bff-a42f-06a02977b0f7";
+   var gCometURL = "http://gulu.cogini.com:8096";
+  </script>
+
+</head>
+<body>
+
+  <div class="glchat" gulu:glchat="230af7fb-e9cb-4c9d-b044-a7452a001783">
+    <h3 class="title"></h3>
+    <form class="send-message">
+      <input type="text" name="message" style="width: 300px" />
+    </form>
+    <div class="content"></div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+API
+---------------------------------------------
+
+Method: start_hungry
+Args: []
+Reply: { "chats": [ { "chat": UUID, 
+                      "participants": [ { "user_id": UserID, 
+                                          "display_name": Name } ] } ]
+
+
+Method: stop_hungry
+Args: []
+Reply: { "success": true }
+
+
+Method: create_chat
+Args: [{f, binary}] // Friend UserID
+Reply: { "chat": UUID,
+         "participants": [ { "user_id": UserID, "display_name": Name } ] }
+
+Method: join_chat
+Args: [{chat, uuid}]
+Reply: { "chat": UUID,
+         "participants": [ { "user_id": UserID, "display_name": Name } ] }
+
+
+// XXX TODO
+Method: leave_chat
+Args: [{chat, uuid}]
+Reply: { "success": true }
+
+
+
+Messages
+---------------------------------------------
+
+key is always "hungry"
+
+// Friend became hungry
+Type: start
+Data: { FriendID: FriendNick }
+
+
+// Friend no longer hungry
+Type: stop
+Data: { FriendID: FriendNick }
+
+
+// Newly visibly chat (Or updated existing chat)
+Type: showchat
+Data: { "chat": UUID,
+        "participants": [ { "user_id": UserID, "display_name": Name }] }
+
+
+// Chat no longer visible
+Type: hidechat
+Data: { "chat": UUID }
+
+
+
+
+

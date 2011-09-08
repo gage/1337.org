@@ -1,0 +1,44 @@
+Received: from mail-qy0-f176.google.com (mail-qy0-f176.google.com [209.85.216.176])
+	by ip-10-34-23-86.ec2.internal (Postfix) with ESMTPS id 569A64E037
+	for <a@gulumail.com>; Fri, 17 Jun 2011 10:21:45 +0000 (UTC)
+Received: by qyk4 with SMTP id 4so415886qyk.7
+        for <a@gulumail.com>; Fri, 17 Jun 2011 03:21:44 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.224.181.206 with SMTP id bz14mr1510878qab.353.1308306104183;
+ Fri, 17 Jun 2011 03:21:44 -0700 (PDT)
+Sender: ryan.carag@geniecapital.com.tw
+Received: by 10.229.100.137 with HTTP; Fri, 17 Jun 2011 03:21:44 -0700 (PDT)
+X-Originating-IP: [220.136.185.236]
+Received: by 10.229.100.137 with HTTP; Fri, 17 Jun 2011 03:21:44 -0700 (PDT)
+In-Reply-To: <BANLkTim1rg6HPrCfi7UAcksTT+hR0VF6uw@mail.gmail.com>
+References: <BANLkTim1rg6HPrCfi7UAcksTT+hR0VF6uw@mail.gmail.com>
+Date: Fri, 17 Jun 2011 18:21:44 +0800
+X-Google-Sender-Auth: dxWL8lWOQxKasPeopGgnfQp5lr4
+Message-ID: <BANLkTimNbytmxj42HWPAy9-x5PuS77paVg@mail.gmail.com>
+Subject: Re: ok here's the start
+From: =?UTF-8?B?5p+v6JCK5oGpIFJ5YW4gQ2FyYWc=?= <ryan.carag@geniecapital.com>
+To: a@gulumail.com
+Content-Type: multipart/alternative; boundary=20cf303b430598ed5404a5e5c0b7
+
+--20cf303b430598ed5404a5e5c0b7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Android
+On Jun 17, 2011 6:18 PM, "=E8=95=AD=E9=80=B8=E5=81=89 Justin Hsiao" <justin=
+..hsiao@geniecapital.com>
+wrote:
+> randommmmmmmmmm
+
+--20cf303b430598ed5404a5e5c0b7
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<p>Android</p>
+<div class=3D"gmail_quote">On Jun 17, 2011 6:18 PM, &quot;=E8=95=AD=E9=80=
+=B8=E5=81=89 Justin Hsiao&quot; &lt;<a href=3D"mailto:justin.hsiao@geniecap=
+ital.com">justin.hsiao@geniecapital.com</a>&gt; wrote:<br type=3D"attributi=
+on">&gt; randommmmmmmmmm<br>
+</div>
+
+--20cf303b430598ed5404a5e5c0b7--

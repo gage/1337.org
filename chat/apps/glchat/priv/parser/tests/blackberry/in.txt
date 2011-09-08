@@ -1,0 +1,58 @@
+Received: from mail-iw0-f169.google.com (mail-iw0-f169.google.com [209.85.214.169])
+        by ip-10-34-23-86.ec2.internal (Postfix) with ESMTPS id 9EB814E2C3
+        for <9468e444-7f6d-4b8f-924e-17f79acbfa40@gulumail.com>; Fri, 17 Jun 2011 10:00:51 +0000 (UTC)
+Received: by iwg8 with SMTP id 8so2023075iwg.28
+        for <9468e444-7f6d-4b8f-924e-17f79acbfa40@gulumail.com>; Fri, 17 Jun 2011 03:00:51 -0700 (PDT)
+Received: by 10.42.150.71 with SMTP id z7mr1954402icv.483.1308304850690;
+        Fri, 17 Jun 2011 03:00:50 -0700 (PDT)
+Received: from 172.22.76.178 (bda-216-9-249-96.bis3.ap.blackberry.com [216.9.249.96])
+        by mx.google.com with ESMTPS id d6sm2421043icx.13.2011.06.17.03.00.49
+        (version=SSLv3 cipher=OTHER);
+        Fri, 17 Jun 2011 03:00:49 -0700 (PDT)
+X-rim-org-msg-ref-id:1741787556
+Message-ID:<1741787556-1308304847-cardhu_decombobulator_blackberry.rim.net-1276164310-@b1.c1.bise3.blackberry>
+Reply-To: justin.hsiao@geniecapital.com.tw
+X-Priority: Normal
+References: <000001309d00a857-0629a09a-aefb-47fe-acc3-eb00888faf08-000000@email.amazonses.com>
+In-Reply-To: <000001309d00a857-0629a09a-aefb-47fe-acc3-eb00888faf08-000000@email.amazonses.com>
+Sensitivity: Normal
+Importance: Normal
+Subject: Re: Update: 9274c936-8903-4d52-b18f-e248fa7c5d1b
+To: 9468e444-7f6d-4b8f-924e-17f79acbfa40@gulumail.com
+From: justin.hsiao@geniecapital.com.tw
+Date: Fri, 17 Jun 2011 10:00:57 +0000
+Content-Type: multipart/alternative; boundary="part1969-boundary-1230455788-396769304"
+MIME-Version: 1.0
+
+
+--part1969-boundary-1230455788-396769304
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="Windows-1252"
+
+VGVzdGluZyBmcm9tIGJsYWNrYmVycnkNCg0KU2VudCBmcm9tIG15IEJsYWNrQmVycnmuIHdpcmVs
+ZXNzIGhhbmRoZWxkIGZyb20gVGFpd2FuIE1vYmlsZQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
+LS0tLQ0KRnJvbTogY2hhdEBndWx1bWFpbC5jb20NCkRhdGU6IEZyaSwgMTcgSnVuIDIwMTEgMDk6
+NDg6NDQgDQpUbzogPGp1c3Rpbi5oc2lhb0BnZW5pZWNhcGl0YWwuY29tPg0KUmVwbHktVG86IDk0
+NjhlNDQ0LTdmNmQtNGI4Zi05MjRlLTE3Zjc5YWNiZmE0MEBndWx1bWFpbC5jb20NClN1YmplY3Q6
+IFVwZGF0ZTogOTI3NGM5MzYtODkwMy00ZDUyLWIxOGYtZTI0OGZhN2M1ZDFiDQoNCk5ldyBNZXNz
+YWdlcyAKIEppbW15IENoZW46IEFuZCBhbm90aGVyIHBpbmcgCiA=
+
+--part1969-boundary-1230455788-396769304
+Content-Transfer-Encoding: base64
+Content-Type: text/html; charset="Windows-1252"
+
+PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4gPGh0bWw+PGhlYWQ+IDxtZXRhIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11dGYt
+OCIgaHR0cC1lcXVpdj0iQ29udGVudC1UeXBlIj4gPC9oZWFkPlRlc3RpbmcgZnJvbSBibGFja2Jl
+cnJ5PGJyLz48cD5TZW50IGZyb20gbXkgQmxhY2tCZXJyea4gd2lyZWxlc3MgaGFuZGhlbGQgZnJv
+bSBUYWl3YW4gTW9iaWxlPC9wPjxoci8+PGRpdj48Yj5Gcm9tOiA8L2I+IGNoYXRAZ3VsdW1haWwu
+Y29tDQo8L2Rpdj48ZGl2PjxiPkRhdGU6IDwvYj5GcmksIDE3IEp1biAyMDExIDA5OjQ4OjQ0ICsw
+MDAwPC9kaXY+PGRpdj48Yj5UbzogPC9iPiZsdDtqdXN0aW4uaHNpYW9AZ2VuaWVjYXBpdGFsLmNv
+bSZndDs8L2Rpdj48ZGl2PjxiPlJlcGx5VG86IDwvYj4gOTQ2OGU0NDQtN2Y2ZC00YjhmLTkyNGUt
+MTdmNzlhY2JmYTQwQGd1bHVtYWlsLmNvbQ0KPC9kaXY+PGRpdj48Yj5TdWJqZWN0OiA8L2I+VXBk
+YXRlOiA5Mjc0YzkzNi04OTAzLTRkNTItYjE4Zi1lMjQ4ZmE3YzVkMWI8L2Rpdj48ZGl2Pjxici8+
+PC9kaXY+PHA+PGI+TmV3IE1lc3NhZ2VzPC9iPjwvcD4NCg0KPHA+DQogDQogICA8Yj5KaW1teSBD
+aGVuPC9iPjoNCiAgIEFuZCBhbm90aGVyIHBpbmcNCiAgIDxiciAvPg0KIA0KPC9wPg0KDQo8L2h0
+bWw+
+
+--part1969-boundary-1230455788-396769304--
