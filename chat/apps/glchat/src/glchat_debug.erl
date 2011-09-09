@@ -1,11 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% @author Brendon Hogger <brendonh@cogini.com>
-%%% @copyright (C) 2011, Cogini
-%%% @doc
-%%% Debug log
-%%% @end
-%%% Created : 15th July 2011 by Brendon Hogger <brendonh@cogini.com>
-%%%-------------------------------------------------------------------
 -module(glchat_debug).
 
 -behaviour(gen_server).

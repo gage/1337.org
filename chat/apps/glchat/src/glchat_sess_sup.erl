@@ -1,11 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% @author  <gulu@dev3.cogini.com>
-%%% @copyright (C) 2011, 
-%%% @doc
-%%%
-%%% @end
-%%% Created : 11 May 2011 by  <gulu@dev3.cogini.com>
-%%%-------------------------------------------------------------------
 -module(glchat_sess_sup).
 
 -behaviour(supervisor).

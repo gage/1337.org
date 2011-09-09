@@ -1,11 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% @author Brendon Hogger <brendonh@dev.brendonh.org>
-%%% @copyright (C) 2011, Brendon Hogger
-%%% @doc
-%%% Random helpful stuff
-%%% @end
-%%% Created : 29 Mar 2011 by Brendon Hogger <brendonh@dev.brendonh.org>
-%%%-------------------------------------------------------------------
 -module(glchat_util).
 
 -include("glchat.hrl").
@@ -66,105 +58,107 @@ unix_timestamp(DT) ->
 %% Argument parsing
 %%====================================================================
 
-parse_args([], [], Values, _Args) ->
-    {ok, lists:reverse(Values)};
-parse_args([], Errors, _Values, _Args) ->
-    {error, lists:reverse(Errors)};
-parse_args([{PostKey, Type, Required}|Rest], Errors, Values, Args) ->
-    {NewVals, NewErrors} = case {Required, (catch fetch_arg(Type, PostKey, Args))} of
-                               {true, undefined} ->
-                                   {Values, [{{error, missing}, {key, PostKey}}|Errors]};
-                               {_, {ok, Val}} ->
-                                   {[Val|Values], Errors};
-                               {_, _Error} ->
-                                   {Values, [{{error, invalid}, {key, PostKey}}|Errors]}
-                           end,
-    parse_args(Rest, NewErrors, NewVals, Args).
+% I think this function will be used in our chat.
 
-
-get_bin(Key, Args) ->
-    case ?GV(Key, Args) of
-        undefined -> undefined;
-        StrBin when is_list(StrBin) ->
-            list_to_binary(StrBin);
-        Bin when is_binary(Bin) ->
-            Bin
-    end.    
-
-fetch_arg(uuid, Key, Args) ->
-    {ok, get_bin(Key, Args)};
-    
-fetch_arg(bin, Key, Args) ->
-    {ok, get_bin(Key, Args)};
-
-fetch_arg(int, Key, Args) ->
-    Int = case ?GV(Key, Args) of
-        undefined -> undefined;
-        I when is_integer(I) -> I;
-        List when is_list(List) -> list_to_integer(List);
-        Bin when is_binary(Bin) -> list_to_integer(binary_to_list(Bin))
-    end,
-    {ok, Int};
-
-fetch_arg(json, Key, Args) ->
-    case ?GV(Key, Args) of
-        undefined -> undefined;
-        Bin ->
-            JSON = jsonerl:decode(Bin),
-            {ok, tuple_to_list(JSON)}
-    end;
-
-fetch_arg(jsonlist, Key, Args) ->
-    case ?GV(Key, Args) of
-        undefined -> undefined;
-        Bin ->
-            JSON = jsonerl:decode(Bin),
-            true = is_list(JSON),
-            {ok, JSON}
-    end;
-
-fetch_arg(chat, Key, Args) ->
-    Code = get_bin(Key, Args),
-    case Code of 
-        undefined -> undefined;
-        <<>> ->
-            {error, invalid};
-        _ ->
-            case glchat_chat_sup:ensure_chat(Code) of
-                none -> {error, invalid};
-                Pid -> {ok, {Code, Pid}}
-            end
-    end;
-
-fetch_arg(list, Key, Args) ->
-    case ?GV(Key, Args) of
-        undefined -> undefined;
-        List ->
-            true = is_list(List),
-            {ok, List}
-    end;
-
-
-fetch_arg({list, raw}, KeyName, Args) ->
-    Key = <<KeyName/binary, "[]">>,
-    {ok, [V || {K, V} <- Args, K == Key]};
-
-fetch_arg({list, Converter}, KeyName, Args) ->
-    Key = KeyName ++ "[]",
-    {ok, [Converter(V) || {K, V} <- Args, K == Key]}.
+% parse_args([], [], Values, _Args) ->
+%     {ok, lists:reverse(Values)};
+% parse_args([], Errors, _Values, _Args) ->
+%     {error, lists:reverse(Errors)};
+% parse_args([{PostKey, Type, Required}|Rest], Errors, Values, Args) ->
+%     {NewVals, NewErrors} = case {Required, (catch fetch_arg(Type, PostKey, Args))} of
+%                                {true, undefined} ->
+%                                    {Values, [{{error, missing}, {key, PostKey}}|Errors]};
+%                                {_, {ok, Val}} ->
+%                                    {[Val|Values], Errors};
+%                                {_, _Error} ->
+%                                    {Values, [{{error, invalid}, {key, PostKey}}|Errors]}
+%                            end,
+%     parse_args(Rest, NewErrors, NewVals, Args).
+% 
+% 
+% get_bin(Key, Args) ->
+%     case ?GV(Key, Args) of
+%         undefined -> undefined;
+%         StrBin when is_list(StrBin) ->
+%             list_to_binary(StrBin);
+%         Bin when is_binary(Bin) ->
+%             Bin
+%     end.    
+% 
+% fetch_arg(uuid, Key, Args) ->
+%     {ok, get_bin(Key, Args)};
+%     
+% fetch_arg(bin, Key, Args) ->
+%     {ok, get_bin(Key, Args)};
+% 
+% fetch_arg(int, Key, Args) ->
+%     Int = case ?GV(Key, Args) of
+%         undefined -> undefined;
+%         I when is_integer(I) -> I;
+%         List when is_list(List) -> list_to_integer(List);
+%         Bin when is_binary(Bin) -> list_to_integer(binary_to_list(Bin))
+%     end,
+%     {ok, Int};
+% 
+% fetch_arg(json, Key, Args) ->
+%     case ?GV(Key, Args) of
+%         undefined -> undefined;
+%         Bin ->
+%             JSON = jsonerl:decode(Bin),
+%             {ok, tuple_to_list(JSON)}
+%     end;
+% 
+% fetch_arg(jsonlist, Key, Args) ->
+%     case ?GV(Key, Args) of
+%         undefined -> undefined;
+%         Bin ->
+%             JSON = jsonerl:decode(Bin),
+%             true = is_list(JSON),
+%             {ok, JSON}
+%     end;
+% 
+% fetch_arg(chat, Key, Args) ->
+%     Code = get_bin(Key, Args),
+%     case Code of 
+%         undefined -> undefined;
+%         <<>> ->
+%             {error, invalid};
+%         _ ->
+%             case glchat_chat_sup:ensure_chat(Code) of
+%                 none -> {error, invalid};
+%                 Pid -> {ok, {Code, Pid}}
+%             end
+%     end;
+% 
+% fetch_arg(list, Key, Args) ->
+%     case ?GV(Key, Args) of
+%         undefined -> undefined;
+%         List ->
+%             true = is_list(List),
+%             {ok, List}
+%     end;
+% 
+% 
+% fetch_arg({list, raw}, KeyName, Args) ->
+%     Key = <<KeyName/binary, "[]">>,
+%     {ok, [V || {K, V} <- Args, K == Key]};
+% 
+% fetch_arg({list, Converter}, KeyName, Args) ->
+%     Key = KeyName ++ "[]",
+%     {ok, [Converter(V) || {K, V} <- Args, K == Key]}.
 
 
 %%====================================================================
 %% Misc
 %%====================================================================
 
-find_object([], _Key, _Value) ->
-    {error, not_found};
-find_object([Obj|Rest], Key, Value) ->
-    case ?GV(Key, Obj) of
-        Value -> {ok, Obj};
-        _ -> find_object(Rest, Key, Value)
-    end.
+% find_object([], _Key, _Value) ->
+%     {error, not_found};
+% find_object([Obj|Rest], Key, Value) ->
+%     case ?GV(Key, Obj) of
+%         Value -> {ok, Obj};
+%         _ -> find_object(Rest, Key, Value)
+%     end.
              
 
     

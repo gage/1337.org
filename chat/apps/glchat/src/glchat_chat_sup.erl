@@ -1,11 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% @author Brendon Hogger <brendonh@cogini.com>
-%%% @copyright (C) 2011
-%%% @doc
-%%% Chat supervisor
-%%% @end
-%%% Created : 17 May 2011 by Brendon Hogger <brendonh@cogini.com>
-%%%-------------------------------------------------------------------
 -module(glchat_chat_sup).
 
 -behaviour(supervisor).
@@ -29,18 +21,19 @@ start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
 
-ensure_chat(Code) ->
-    case gproc:where({n, l, {chat, Code}}) of
-        undefined ->
-            case supervisor:start_child(?SERVER, [Code]) of
-                {ok, Pid} -> Pid;
-                Other -> 
-                    ?DBG({oh_noes,Other}),
-                    none
-            end;
-        Pid ->
-            Pid
-    end.
+ensure_chat(_Code) ->
+    implement_this.
+    % case gproc:where({n, l, {chat, Code}}) of
+    %     undefined ->
+    %         case supervisor:start_child(?SERVER, [Code]) of
+    %             {ok, Pid} -> Pid;
+    %             Other -> 
+    %                 ?DBG({oh_noes,Other}),
+    %                 none
+    %         end;
+    %     Pid ->
+    %         Pid
+    % end.
 
 
 %%%===================================================================

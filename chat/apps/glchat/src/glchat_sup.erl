@@ -24,7 +24,7 @@ start_link() ->
 
 init([]) ->
 
-    glchat_hunger:init(),
+    % glchat_hunger:init(),
 
     ChatSup = {chat_sup, {glchat_chat_sup, start_link, []},
                permanent, 2000, supervisor, [glchat_chat_sup]},
@@ -32,8 +32,5 @@ init([]) ->
     SessSup = {sess_sup, {glchat_sess_sup, start_link, []},
                permanent, 2000, supervisor, [glchat_sess_sup]},
 
-    CacheSup = {cache_sup, {glchat_usercache_sup, start_link, []},
-               permanent, 2000, supervisor, [glchat_usercache_sup]},
-
-    {ok, { {one_for_one, 500, 10}, [ChatSup, SessSup, CacheSup]} }.
+    {ok, { {one_for_one, 500, 10}, [ChatSup, SessSup]} }.
 

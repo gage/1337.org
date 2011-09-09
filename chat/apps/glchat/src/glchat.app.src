@@ -10,8 +10,7 @@
                   crypto,
                   gproc,
                   erlmongo,
-                  cowboy,
-                  apns
+                  cowboy
                  ]},
   {mod, { glchat_app, []}},
   {env, []},
