@@ -19,22 +19,26 @@
 
 -define(GPROCKEY(UUID), {n,l,{session,UUID}}).
 
-% -record(state, {
-%   key,
-%   participantUUID,
-%   userID = none,
-%   chatUUIDs = [],
-%   seqs = gb_trees:empty(),
-%   sentSeqs = gb_trees:empty(),
-%   lastAck = 0,
-% 
-%   lastPollTime,
-% 
-%   listener = none,
-%   queue = [],
-% 
-%   firstPoll = true
-% }).
+
+
+% This record is for every user who is polling from chatserver.
+% We use this to keep track with this user and deliver state from various procedures.
+-record(state, {
+  key,
+  participantUUID,
+  userID = none,
+  chatUUIDs = [],
+  seqs = gb_trees:empty(),
+  sentSeqs = gb_trees:empty(),
+  lastAck = 0,
+
+  lastPollTime,
+
+  listener = none,
+  queue = [],
+
+  firstPoll = true
+}).
 
 
 %%%===================================================================
@@ -52,15 +56,18 @@ behaviour_info(_Other) ->
 %%%===================================================================
 
 spawn_session(ParticipantUUID) ->
-    implement_this.
-    % UUID = list_to_binary(glchat_util:format_uuid(glchat_util:random_uuid())),
-    % case gproc:lookup_pids(?GPROCKEY(UUID)) of
-    %     [_] ->
-    %         spawn_session(ParticipantUUID);
-    %     [] ->
-    %         {ok, Pid} = supervisor:start_child(glchat_sess_sup, [ParticipantUUID, UUID]),
-    %         {ok, UUID, Pid}
-    % end.
+    % UUID: randomly generate a UUID and then we find if there is any process use this UUID.
+    %       if there is one, then re-random one.
+    % Pid: Procedure ID in erlang. --> Corresponding to a process of Chatrrom--User pair
+    % ParticipantUUID: unique uuid from django user.
+    UUID = list_to_binary(glchat_util:format_uuid(glchat_util:random_uuid())),
+    case gproc:lookup_pids(?GPROCKEY(UUID)) of
+        [_] ->
+            spawn_session(ParticipantUUID);
+        [] ->
+            {ok, Pid} = supervisor:start_child(glchat_sess_sup, [ParticipantUUID, UUID]),
+            {ok, UUID, Pid}
+    end.
 
 find(UUID) ->
     gproc:where(?GPROCKEY(UUID)).
@@ -73,10 +80,13 @@ start_link(ParticipantUUID, Key) ->
 %%% gen_server callbacks
 %%%===================================================================
 
-init([_ParticipantUUID, _Key]) ->
-    implement_this.
-    % gproc:reg(?GPROCKEY(Key), self()),
-    % gproc:reg({p, l, {participant_session, ParticipantUUID}}),
+init([ParticipantUUID, Key]) ->
+    gproc:reg(?GPROCKEY(Key), self()),
+    gproc:reg({p, l, {participant_session, ParticipantUUID}}),
+    % We can use it but now we don't have uuid for each user in 1337
+    
+    
+    UserID = "this is a tmp user id for test.",
     % UserID = case glchat_mongo:get_user_id(ParticipantUUID) of
     %              none -> 
     %                  none;
@@ -84,18 +94,18 @@ init([_ParticipantUUID, _Key]) ->
     %                  gproc:reg({p, l, {user_session, UID}}),
     %                  UID
     %          end,
-    % 
-    % %?DBG({session_running, ParticipantUUID, UserID, Key}),
-    % {ok, Conf} = application:get_env(http),
-    % Timeout = ?GV(session_timeout, Conf),
-    % timer:send_interval(Timeout, defunctCheck),
-    % 
-    % {ok, #state{
-    %    key = Key,
-    %    participantUUID = ParticipantUUID,
-    %    userID = UserID,
-    %    lastPollTime = now()
-    %   }}.
+    
+    ?DBG({session_running, ParticipantUUID, Key}),
+    {ok, Conf} = application:get_env(http),
+    Timeout = ?GV(session_timeout, Conf),
+    timer:send_interval(Timeout, defunctCheck),
+    
+    {ok, #state{
+       key = Key,
+       participantUUID = ParticipantUUID,
+       userID = UserID,
+       lastPollTime = now()
+      }}.
 
 % TODO
 
@@ -106,16 +116,16 @@ init([_ParticipantUUID, _Key]) ->
 %     handle_poll(From, State);
 % 
 % 
-% handle_call({call, join, [ChatUUIDs]}, _From, State) ->
-%     keepalive(State),
-%     Infos = glchat_sess_api:handle(join, [ChatUUIDs], State#state.participantUUID, State#state.userID),
-%     ValidChatUUIDs = [UUID || UUID <- [?GV(chat, Info) || Info <- Infos], UUID /= undefined],
-%     {reply, [list_to_tuple(I) || I <- Infos], State#state{chatUUIDs=ValidChatUUIDs}};
-% 
-% handle_call({call, Method, Args}, _From, State) ->
-%     keepalive(State),
-%     Reply = glchat_sess_api:handle(Method, Args, State#state.participantUUID, State#state.userID),
-%     {reply, Reply, State};
+handle_call({call, join, [ChatUUIDs]}, _From, State) ->
+    keepalive(State),
+    Infos = glchat_sess_api:handle(join, [ChatUUIDs], State#state.participantUUID, State#state.userID),
+    ValidChatUUIDs = [UUID || UUID <- [?GV(chat, Info) || Info <- Infos], UUID /= undefined],
+    {reply, [list_to_tuple(I) || I <- Infos], State#state{chatUUIDs=ValidChatUUIDs}};
+
+handle_call({call, Method, Args}, _From, State) ->
+    keepalive(State),
+    Reply = glchat_sess_api:handle(Method, Args, State#state.participantUUID, State#state.userID),
+    {reply, Reply, State};
 
 handle_call(Request, _From, State) ->
     ?DBG({unexpected_call, Request}),
@@ -224,10 +234,10 @@ code_change(_OldVsn, State, _Extra) ->
 %     handle_poll(From, State#state{listener=none}).
 % 
 % 
-% keepalive(#state{userID=none}) -> 
-%     ok;
-% keepalive(#state{userID=UserID}) ->
-%     gproc:send({p, l, {user_cache, UserID}}, keepalive).
+keepalive(#state{userID=none}) -> 
+    ok;
+keepalive(#state{userID=UserID}) ->
+    gproc:send({p, l, {user_cache, UserID}}, keepalive).
 % 
 % 
 % send_seqs(#state{seqs=Seqs, sentSeqs=SentSeqs}=State) ->

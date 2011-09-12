@@ -32,10 +32,7 @@ terminate(_Req, _State) ->
 %% -------------- Init ----------------
 
 handle('POST', [<<"start">>], Req) ->
-    implement_this,
-    encode_reply(Req, [{success, true}, {uuid, "test_uuid"}, 
-                       {chats, "test_chat"}, {subscribes, "test_info"}]);
-    % create_session(Req);
+    create_session(Req);
 
 %% -------------- Polling ----------------
 
@@ -59,22 +56,24 @@ handle(Method, Path, Req) ->
 %%% Internal Functions
 %%%===================================================================
 
-% create_session(_Req) ->
-%     case parse_args(Req, [{<<"pid">>, uuid, true}, 
-%                           {<<"joins">>, {list, raw}, true},
-%                           {<<"subscribes">>, {list, raw}, true}]) of
-%         {ok, [ParticipantUUID, Joins, Subscribes]} ->
-%             {ok, UUID, Pid} = glchat_sess:spawn_session(ParticipantUUID),
-%             JoinInfos = gen_server:call(Pid, {call, join, [Joins]}),
-%             SubscribeInfos = gen_server:call(Pid, {call, subscribe, [Subscribes]}),
-%            encode_reply(Req, [{success, true}, {uuid, UUID}, 
-%                               {chats, JoinInfos}, {subscribes, SubscribeInfos}]);
-%         {error, Errors} ->
-%             encode_reply(Req, [{success, false}, {error, invalid_call}, {call_errors, Errors}]);
-%         Error ->
-%             ?DBG({call_error, Error}),
-%             send_error(Req, "Internal error")
-%     end.
+create_session(Req) ->
+    case parse_args(Req, [{<<"pid">>, uuid, true}, 
+                          {<<"joins">>, {list, raw}, true},
+                          {<<"subscribes">>, {list, raw}, true}]) of
+        {ok, [ParticipantUUID, Joins, Subscribes]} ->
+            {ok, UUID, Pid} = glchat_sess:spawn_session(ParticipantUUID),
+            % Nowe Pid corresponds to a process (glchat_see) --> we can call its function by
+            % -----> gen_server:call(Pid, {call, join, [Joins]}),
+            JoinInfos = gen_server:call(Pid, {call, join, [Joins]}),
+            SubscribeInfos = gen_server:call(Pid, {call, subscribe, [Subscribes]}),
+           encode_reply(Req, [{success, true}, {uuid, UUID}, 
+                              {chats, JoinInfos}, {subscribes, SubscribeInfos}]);
+        {error, Errors} ->
+            encode_reply(Req, [{success, false}, {error, invalid_call}, {call_errors, Errors}]);
+        Error ->
+            ?DBG({call_error, Error}),
+            send_error(Req, "Internal error")
+    end.
 
 
 encode_reply(Req, PropList) ->
@@ -117,10 +116,10 @@ send_error(Req, Reply) ->
 %     end.
 
 
-% unquote(Bin) ->
-%     list_to_binary(mochiweb_util:unquote(Bin)).
-% 
-% parse_args(Req, ArgSpec) ->
-%     {Post, _} = ?REQ:body_qs(Req),
-%     Decoded = [{unquote(K), unquote(V)} || {K, V} <- Post],
-%     glchat_util:parse_args(ArgSpec, [], [], Decoded).
+unquote(Bin) ->
+    list_to_binary(mochiweb_util:unquote(Bin)).
+
+parse_args(Req, ArgSpec) ->
+    {Post, _} = ?REQ:body_qs(Req),
+    Decoded = [{unquote(K), unquote(V)} || {K, V} <- Post],
+    glchat_util:parse_args(ArgSpec, [], [], Decoded).

@@ -21,19 +21,18 @@ start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
 
-ensure_chat(_Code) ->
-    implement_this.
-    % case gproc:where({n, l, {chat, Code}}) of
-    %     undefined ->
-    %         case supervisor:start_child(?SERVER, [Code]) of
-    %             {ok, Pid} -> Pid;
-    %             Other -> 
-    %                 ?DBG({oh_noes,Other}),
-    %                 none
-    %         end;
-    %     Pid ->
-    %         Pid
-    % end.
+ensure_chat(Code) ->
+    case gproc:where({n, l, {chat, Code}}) of
+        undefined ->
+            case supervisor:start_child(?SERVER, [Code]) of
+                {ok, Pid} -> Pid;
+                Other -> 
+                    ?DBG({oh_noes,Other}),
+                    none
+            end;
+        Pid ->
+            Pid
+    end.
 
 
 %%%===================================================================
