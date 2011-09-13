@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'globals',
     'registration',
     'chats',
+    'user_profile',
 
     #3rd party
     'dbindexer',
@@ -143,6 +144,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+
+AUTH_PROFILE_MODULE = 'user_profile.UserProfile'
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.

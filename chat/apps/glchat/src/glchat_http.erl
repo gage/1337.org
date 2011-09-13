@@ -62,7 +62,7 @@ create_session(Req) ->
                           {<<"subscribes">>, {list, raw}, true}]) of
         {ok, [ParticipantUUID, Joins, Subscribes]} ->
             {ok, UUID, Pid} = glchat_sess:spawn_session(ParticipantUUID),
-            % Nowe Pid corresponds to a process (glchat_see) --> we can call its function by
+            % Now Pid corresponds to a process (glchat_see) --> we can call its function by
             % -----> gen_server:call(Pid, {call, join, [Joins]}),
             JoinInfos = gen_server:call(Pid, {call, join, [Joins]}),
             SubscribeInfos = gen_server:call(Pid, {call, subscribe, [Subscribes]}),

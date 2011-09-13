@@ -1,6 +1,6 @@
 -module(glchat_mongo).
 
--export([connect/0, get_conn/0
+-export([connect/0, get_conn/0, get_user_id/1
 ]).
 
 -include("glchat.hrl").
@@ -95,17 +95,17 @@ get_conn() ->
 % ===============================
 %       Find user id
 % ===============================
-% get_user_id(ParticipantUUID) ->
-%     Conn = get_conn(),
-%     case Conn:findOne("user_profiles_userprofile",
-%                       [{<<"uuid">>, ParticipantUUID}],
-%                       [{<<"user_id">>, true}]) of
-%         {ok, [_|_]=Doc} ->
-%             {oid, UserID} = ?GV(<<"user_id">>, Doc),
-%             UserID;
-%         _ ->
-%             none
-%     end.
+get_user_id(ParticipantUUID) ->
+    Conn = get_conn(),
+    case Conn:findOne("user_profile_userprofile",
+                      [{<<"uuid">>, ParticipantUUID}],
+                      [{<<"user_id">>, true}]) of
+        {ok, [_|_]=Doc} ->
+            {oid, UserID} = ?GV(<<"user_id">>, Doc),
+            UserID;
+        _ ->
+            none
+    end.
 
 % ===============================
 % Find iphone device token
