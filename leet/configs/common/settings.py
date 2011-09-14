@@ -134,6 +134,8 @@ INSTALLED_APPS = (
     'registration',
     'chats',
     'user_profile',
+    'sandbox',
+    
 
     #3rd party
     'dbindexer',
@@ -144,6 +146,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+CHAT_SERVER_DOMAIN = ""
 
 AUTH_PROFILE_MODULE = 'user_profile.UserProfile'
 # A sample logging configuration. The only tangible logging

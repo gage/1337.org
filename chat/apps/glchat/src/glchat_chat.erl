@@ -45,95 +45,93 @@ start_link(Code) ->
 %%% gen_server callbacks
 %%%===================================================================
 
-init([_Code]) ->
-    ?DBG({chat_start_failed}),
-    {stop, error}.
-    
-    % ==== Implement this
-    
-    % case glchat_mongo:get_chat(Code) of
-    %     {ok, Info} ->
-    %         gproc:reg({n, l, {chat, Code}}),
-    % 
-    %         {ok, Conf} = application:get_env(chat),
-    %         put(trace, ?GV(trace, Conf)),
-    % 
-    %         UUID = ?GV(<<"uuid">>, Info),
-    %         put(chat_uuid, UUID),
-    % 
-    %         Seq = case ?GV(<<"last_message_sequence">>, Info) of
-    %                   undefined -> 0;
-    %                   Val -> round(Val)
-    %               end,
-    %                                
-    %         Participants = ?GVD(<<"participants">>, Info, []),
-    %         {array, Messages} = ?GVD(<<"messages">>, Info, {array, []}),
-    % 
-    %         Title = case ?GV(<<"title">>, Info) of
-    %                     undefined -> <<"Update: ", UUID/binary>>;
-    %                     "" -> <<"Update: ", UUID/binary>>;
-    %                     TitleStr -> TitleStr
-    %                 end,
-    % 
-    %         URL = case ?GV(<<"url">>, Info) of
-    %                   undefined -> undefined;
-    %                   "" -> undefined;
-    %                   URLStr -> URLStr
-    %               end,
-    % 
-    %         State0 = #state{
-    %           uuid = UUID,
-    %           messages = lists:reverse(Messages),
-    %           participants = ?PARTS:new(Participants),
-    %           hungry = ?GVD(<<"hungry">>, Info, false),
-    %           title = Title,
-    %           url = URL,
-    %           sequence = Seq
-    %         },
-    % 
-    %         case State0#state.hungry == true
-    %             andalso length(?PARTS:hungry_list(State0#state.participants)) < 2 of
-    %             true -> 
-    %                 ?DBG({chat_finished, State0#state.uuid}),
-    %                 ?PARTS:commit(State0#state.participants, [{<<"finished">>, {set, true}}]),
-    %                 {stop, normal};
-    %             _ -> 
-    %                 timer:send_interval(?IDLE_CHECK_TIME, idle_check),
-    %                 IdleTime = ?GV(idle_time, Conf),
-    %                 timer:send_interval(IdleTime * 1000, dispatch_idle),
-    %                 State = dispatch_idle(idle_check(State0)),
-    %                 ?DBG({chat_started, Code}),
-    %                 {ok, State}
-    % 
-    %         end;
-    % 
-    %     {error, Error} ->
-    %         ?DBG({chat_start_failed, Code, Error}),
-    %         {stop, Error}
-    % end.
-    
-handle_call({join, _ParticipantUUID}, _From, State) ->    
-    NewState = State,
-    Reply = none,
-    {reply, Reply, NewState};    
-    % case glchat_mongo:get_chat(State#state.uuid, ParticipantUUID) of
-    %     {ok, Participant} ->
-    %         NewParts0 = ?PARTS:ensure(Participant, State#state.participants),
-    %         NewParts = ?PARTS:commit(?PARTS:seq(ParticipantUUID, State#state.sequence, NewParts0)),
-    %         NewState = State#state{participants=NewParts},
-    %         Reply = [{userUUID, ?PARTS:get_field(ParticipantUUID, <<"session_uuid">>, NewParts)},
-    %                  {chat, NewState#state.uuid},
-    %                  {participants, ?PARTS:public_list(NewParts)},
-    %                  {messages, [list_to_tuple(munge_message(M, NewParts)) 
-    %                              || M <- lists:sublist(NewState#state.messages, ?BUFFER_SIZE)]}];
-    %     {error, _Error} ->
-    %         NewState = State,
-    %         Reply = none
-    % end,
-    % {reply, Reply, NewState};
+init([Code]) ->
+    case glchat_mongo:get_chat(Code) of
+        {ok, Info} ->
+            gproc:reg({n, l, {chat, Code}}),
 
-handle_call({subscribe, ParticipantUUID}, _From, State) ->
-    participant_call(ParticipantUUID, State, fun handle_seq/2);
+            {ok, Conf} = application:get_env(chat),
+            put(trace, ?GV(trace, Conf)),
+
+            UUID = ?GV(<<"uuid">>, Info),
+            put(chat_uuid, UUID),
+            
+            % Seq = case ?GV(<<"last_message_sequence">>, Info) of
+            %           undefined -> 0;
+            %           Val -> round(Val)
+            %       end,
+            %                        
+            Seq = 0,
+            Participants = [],
+            Messages = [],
+            Title = "tmp title",
+            URL = "tmp url",
+            % Participants = ?GVD(<<"participants">>, Info, []),
+            % {array, Messages} = ?GVD(<<"messages">>, Info, {array, []}),
+            % 
+            % Title = case ?GV(<<"title">>, Info) of
+            %             undefined -> <<"Update: ", UUID/binary>>;
+            %             "" -> <<"Update: ", UUID/binary>>;
+            %             TitleStr -> TitleStr
+            %         end,
+            % 
+            % URL = case ?GV(<<"url">>, Info) of
+            %           undefined -> undefined;
+            %           "" -> undefined;
+            %           URLStr -> URLStr
+            %       end,
+            % 
+            State0 = #state{
+              uuid = UUID,
+              messages = lists:reverse(Messages),
+              participants = ?PARTS:new(Participants),
+              hungry = ?GVD(<<"hungry">>, Info, false),
+              title = Title,
+              url = URL,
+              sequence = Seq
+            },
+            ?DBG({try_try});
+            % case State0#state.hungry == true
+            %     andalso length(?PARTS:hungry_list(State0#state.participants)) < 2 of
+            %     true -> 
+            %         ?DBG({chat_finished, State0#state.uuid}),
+            %         ?PARTS:commit(State0#state.participants, [{<<"finished">>, {set, true}}]),
+            %         {stop, normal};
+            %     _ -> 
+            %         timer:send_interval(?IDLE_CHECK_TIME, idle_check),
+            %         IdleTime = ?GV(idle_time, Conf),
+            %         timer:send_interval(IdleTime * 1000, dispatch_idle),
+            %         State = dispatch_idle(idle_check(State0)),
+            %         ?DBG({chat_started, Code}),
+            %         {ok, State}
+            % 
+            % end;
+
+        {error, Error} ->
+            ?DBG({chat_start_failed, Code, Error}),
+            {stop, Error}
+    end.
+
+    
+% handle_call({join, ParticipantUUID}, _From, State) ->
+%     case glchat_mongo:get_chat(State#state.uuid, ParticipantUUID) of
+%         {ok, Participant} ->
+%             NewParts0 = ?PARTS:ensure(Participant, State#state.participants),
+%             NewParts = ?PARTS:commit(?PARTS:seq(ParticipantUUID, State#state.sequence, NewParts0)),
+%             NewState = State#state{participants=NewParts},
+%             Reply = [{userUUID, ?PARTS:get_field(ParticipantUUID, <<"session_uuid">>, NewParts)},
+%                      {chat, NewState#state.uuid},
+%                      {participants, ?PARTS:public_list(NewParts)},
+%                      {messages, [list_to_tuple(munge_message(M, NewParts)) 
+%                                  || M <- lists:sublist(NewState#state.messages, ?BUFFER_SIZE)]}];
+%         {error, _Error} ->
+%             NewState = State,
+%             Reply = none
+%     end,
+%     {reply, Reply, NewState};
+% 
+% handle_call({subscribe, ParticipantUUID}, _From, State) ->
+%     participant_call(ParticipantUUID, State, fun handle_seq/2);
     
 handle_call(Request, _From, State) ->
     ?DBG({unexpected_call, Request}),

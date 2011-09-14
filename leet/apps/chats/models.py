@@ -1,7 +1,12 @@
+import uuid
 import datetime
 from django.db import models
-from djangotoolbox.fields import ListField, DictField, EmbeddedModelField
 from django.conf import settings
+from djangotoolbox.fields import ListField, DictField, EmbeddedModelField
+
+
+class UnsafeSaveException(Exception):
+    pass
 
 class Chatroom(models.Model):
 
@@ -14,3 +19,11 @@ class Chatroom(models.Model):
 
     def get_absolute_url(self):
         return settings.CHAT_SERVER_DOMAIN + 'chat/room/%s' % self.title
+
+    def save(self, *args, **kwargs):
+        """ Generates a UUID on initial save. """
+        if self.pk is None:
+            self.uuid = "%s"% uuid.uuid4()
+        else:
+            raise UnsafeSaveException("Chats cannot be safely saved")
+        super(Chatroom, self).save(*args, **kwargs)
