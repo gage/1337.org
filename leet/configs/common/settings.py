@@ -130,7 +130,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.comments',
     'django.contrib.admin',
-    #leet apps
+
+    #3rd party
+    'dbindexer',
+    'djangotoolbox',
+)
+
+LEET_APPS = (
     'globals',
     'registration',
     'chats',
@@ -140,16 +146,10 @@ INSTALLED_APPS = (
     'actstream',
     'threads',
     'sandbox',
-
-
-    #3rd party
-    'dbindexer',
-    'djangotoolbox',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'testing',
 )
+
+INSTALLED_APPS += LEET_APPS
 
 CHAT_SERVER_DOMAIN = ""
 
