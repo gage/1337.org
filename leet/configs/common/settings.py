@@ -140,7 +140,6 @@ INSTALLED_APPS = (
     'actstream',
     'threads',
     'sandbox',
-    'sandbox',
 
 
     #3rd party
