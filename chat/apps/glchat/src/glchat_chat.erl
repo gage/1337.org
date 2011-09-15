@@ -88,7 +88,6 @@ init([Code]) ->
               url = URL,
               sequence = Seq
             },
-            ?DBG({try_try}),
             timer:send_interval(?IDLE_CHECK_TIME, idle_check),
             IdleTime = ?GV(idle_time, Conf),
             timer:send_interval(IdleTime * 1000, dispatch_idle),

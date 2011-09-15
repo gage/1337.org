@@ -103,10 +103,8 @@ session_call(Req, ArgSpec, Method) ->
                                               _ -> -1
                                           end,
                                     {Seq, Messages} = gen_server:call(Session, {poll, Ack}, infinity),
-                                    ?DBG({after_call, Seq, Messages}),
                                     {{seq, Seq}, {messages, [list_to_tuple(lists:ukeysort(1, M)) || M <- Messages]}};
                                 _ ->
-                                    ?DBG({message_send, Method, Args}),
                                     gen_server:call(Session, {call, Method, Args}, 30000)
                             end,
                     send_reply(Req, jsonerl:encode(Reply))
