@@ -24,7 +24,7 @@ class UserProfile(models.Model):
     edu_dep         = ListField(models.CharField(max_length=30, null=True))
     company         = ListField(models.CharField(max_length=30, null=True))
     score           = models.FloatField(default=0)
-    skill           = models.ForeignKey('projects.Project', related_name='related_users')
+    skill           = models.ForeignKey('projects.Project', related_name='related_users', null=True, blank=True)
     
     
     

@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from djangotoolbox.fields import SetField, ListField, EmbeddedModelField
 from django_mongodb_engine.contrib import MongoDBManager
 from django.utils.translation import ugettext_lazy as _
+from globals.models import UrlLink
 
 class ProjectManager(MongoDBManager):
     pass
@@ -52,18 +53,17 @@ class Project(models.Model):
         super(Project, self).save(*args, **kwargs)
         
     def add_url_link(self, url, title):
-        ul = UrlLink.objects.create(url=url, title=title)
-        urls = self.urls.append(ul)
-        Project.objects.filter(pk=self.id).update(urls=urls)
+        ul = UrlLink.objects.create(url=url, title=title)    
+        self.urls.append(ul)
+        self.save()
         return ul
         
     def delete_url_link(self, id):
-        urls = self.urls
-        for url in urls:
+        for url in self.urls:
             if url.id == id:
-                urls.remove(url)
-                Project.objects.filter(pk=self.id).update(urls=urls)
-                return urls
+                self.urls.remove(url)
+                self.save()
+                return self.urls
         
 
 class Media(models.Model):
