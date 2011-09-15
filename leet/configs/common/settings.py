@@ -128,14 +128,19 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.comments',
     'django.contrib.admin',
     #leet apps
     'globals',
     'registration',
     'chats',
     'user_profile',
+    'photos',
+    'projects',
+    'actstream',
+    'threads',
     'sandbox',
-    
+
 
     #3rd party
     'dbindexer',
