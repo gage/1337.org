@@ -1,6 +1,6 @@
 -module(glchat_mongo).
 
--export([connect/0, get_conn/0, get_user_id/1
+-export([connect/0, get_conn/0, get_user_id/1, get_chat/1, get_chat/2
 ]).
 
 -include("glchat.hrl").

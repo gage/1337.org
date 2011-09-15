@@ -3,14 +3,22 @@
 
 
 <a href="#" id="create_chatroom">Create Chatroom</a><br/>
+<a href="#" id="join_chatroom">Join Chatroom</a><br/>
 <a href="#" id="link_chatserver">Link Chat Server</a><br/>
+<input id="id_msg" name="msg" value="" placeholder="say something here ..." >
 
 <div id="chatserver_anchor"></div>
 
 <script>
 var ack = -1;
+var user_erl_sess_process_id;
 var chatroom_uuid;
+$("#join_chatroom").hide();
+$("#link_chatserver").hide();
+$("#id_msg").hide();
+
 $("#create_chatroom").click(create_chatroom);
+$("#join_chatroom").click(join_chatroom);
 $("#link_chatserver").click(link_chatserver);
 
 function create_chatroom(e){
@@ -20,10 +28,25 @@ function create_chatroom(e){
 	    data: {title:"Test Chatroom", is_test:true},
 	    dataType : 'json',
 	    success : function (result) {
-			console.log(result.data.uuid);
 			$("#chatserver_anchor").append("Chatroom: "+result.data.uuid+"<br/>");
+			$("#join_chatroom").show();
 			chatroom_uuid = result.data.uuid;
 			$(e.target).slideUp();
+	    }
+	});
+}
+
+function join_chatroom(e){
+	$.ajax({
+	    url : '{% url join-chatroom %}',
+	    type: 'POST',
+	    data: {chatroom_uuid:chatroom_uuid},
+	    dataType : 'json',
+	    success : function (result) {
+			$("#chatserver_anchor").append("Join as: UUID:"+result.data.uuid+" Session_id:"+result.data.session_uuid+"<br/>");
+			$("#link_chatserver").show();
+			$(e.target).slideUp();
+			
 	    }
 	});
 }
@@ -36,7 +59,10 @@ function poll(uuid){
 	    dataType : 'json',
 	    success : function (result) {
 			ack = result.seq;
-			$("#chatserver_anchor").append("Ack: "+result.seq+"<br/>");
+			if (result.messages.length != 0){
+				var message = result.messages[0].content;
+				$("#chatserver_anchor").append("Msg: "+message+"<br/>");
+			}
 			console.log(result);
 			poll(uuid);
 	    }
@@ -52,12 +78,36 @@ function link_chatserver(e){
 	    success : function (result) {
 			$("#chatserver_anchor").append("uuid in erlang: <span id='uuid'>"+ result.uuid + "</span><br/>");
 			$(e.target).slideUp();
+			$("#id_msg").show();
+			user_erl_sess_process_id=result.uuid;
 			poll(uuid=result.uuid);
 	    }
 	});
 }
 
-// link_chatserver();
+function send_message(){
+            $.ajax({
+                url: '/runtime/message/',
+                type: 'POST',
+                data: {id:user_erl_sess_process_id, chatid:chatroom_uuid, msg:$('#id_msg').val()},
+                dataType: 'html',
+                success: function(data){
+                    console.log(data);
+                    $('#id_msg').val('');
+                }
+            });
+        }
+
+$('#id_msg').keypress(function(e){
+    var code = (e.keyCode ? e.keyCode : e.which);
+    if(code==13){
+        send_message();
+    }
+}).focus(function(e){
+    if(typeof(tclr) != "undefined")
+        if(tclr.stop)
+            tclr.stop();
+});
 
 </script>
 

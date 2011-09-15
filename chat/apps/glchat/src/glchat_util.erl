@@ -122,18 +122,18 @@ fetch_arg(jsonlist, Key, Args) ->
             {ok, JSON}
     end;
 
-% fetch_arg(chat, Key, Args) ->
-%     Code = get_bin(Key, Args),
-%     case Code of 
-%         undefined -> undefined;
-%         <<>> ->
-%             {error, invalid};
-%         _ ->
-%             case glchat_chat_sup:ensure_chat(Code) of
-%                 none -> {error, invalid};
-%                 Pid -> {ok, {Code, Pid}}
-%             end
-%     end;
+fetch_arg(chat, Key, Args) ->
+    Code = get_bin(Key, Args),
+    case Code of 
+        undefined -> undefined;
+        <<>> ->
+            {error, invalid};
+        _ ->
+            case glchat_chat_sup:ensure_chat(Code) of
+                none -> {error, invalid};
+                Pid -> {ok, {Code, Pid}}
+            end
+    end;
 
 fetch_arg(list, Key, Args) ->
     case ?GV(Key, Args) of

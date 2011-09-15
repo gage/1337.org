@@ -136,27 +136,26 @@ handle_cast(Msg, State) ->
     ?DBG({unexpected_cast, Msg}),
     {noreply, State}.
 
-% TODO
+% Chat will call this to push message to each participant in chatroom.
+handle_info({push, {message, UUID, Seq}, Obj}, State) ->
+    NewSeqs = case lists:member(UUID, State#state.chatUUIDs) of
+                  true -> gb_trees:enter(UUID, Seq, State#state.seqs);
+                  _ -> State#state.seqs
+              end,
+    handle_info({push, UUID, Obj}, State#state{seqs=NewSeqs});
 
-% handle_info({push, {message, UUID, Seq}, Obj}, State) ->
-%     NewSeqs = case lists:member(UUID, State#state.chatUUIDs) of
-%                   true -> gb_trees:enter(UUID, Seq, State#state.seqs);
-%                   _ -> State#state.seqs
-%               end,
-%     handle_info({push, UUID, Obj}, State#state{seqs=NewSeqs});
-% 
-% handle_info({push, Key, Obj}, State) when is_atom(Key) ->
-%     handle_info({push, list_to_binary(atom_to_list(Key)), Obj}, State);
-% 
-% handle_info({push, Key, Obj}, #state{listener=none}=State) ->
-%     Msg = [{key, Key}|Obj],
-%     NewQueue = [Msg|State#state.queue],
-%     {noreply, State#state{queue=NewQueue}};
-% 
-% handle_info({push, Key, Obj}, #state{listener=Listener}=State) ->
-%     Msg = [{key, Key}|Obj],
-%     gen_server:reply(Listener, {State#state.lastAck, [Msg]}),
-%     {noreply, send_seqs(State#state{listener=none})};
+handle_info({push, Key, Obj}, State) when is_atom(Key) ->
+    handle_info({push, list_to_binary(atom_to_list(Key)), Obj}, State);
+
+handle_info({push, Key, Obj}, #state{listener=none}=State) ->
+    Msg = [{key, Key}|Obj],
+    NewQueue = [Msg|State#state.queue],
+    {noreply, State#state{queue=NewQueue}};
+
+handle_info({push, Key, Obj}, #state{listener=Listener}=State) ->
+    Msg = [{key, Key}|Obj],
+    gen_server:reply(Listener, {State#state.lastAck, [Msg]}),
+    {noreply, send_seqs(State#state{listener=none})};
 % 
 % handle_info({join_chat, ChatUUID}, #state{participantUUID=ParticipantUUID, userID=UserID}=State) ->
 %     case glchat_sess_api:handle(join, [[ChatUUID]], ParticipantUUID, UserID) of
