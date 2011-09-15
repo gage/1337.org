@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     #module views
     (r'^registration/', include('registration.urls')),
     (r'^chats/', include('chats.urls')),
+    (r'^sandbox/', include('sandbox.urls')),
 )
 
 if settings.DEBUG is False and (settings.SITE_DOMAIN == 'localhost' or settings.SITE_DOMAIN == 'localhost.local'):   #if DEBUG is True it will be served automatically

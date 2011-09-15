@@ -36,9 +36,8 @@ handle('POST', [<<"start">>], Req) ->
 
 %% -------------- Polling ----------------
 
-handle('POST', [<<"poll">>], _Req) ->
-    implement_this;
-    % session_call(Req, [{<<"ack">>, int, false}], poll);
+handle('POST', [<<"poll">>], Req) ->
+    session_call(Req, [{<<"ack">>, int, false}], poll);
 
 %% -------------- Chat API ----------------
 
@@ -87,33 +86,36 @@ send_error(Req, Reply) ->
     ?REQ:reply(400, [{'Content-Type', <<"application/json">>}], Reply, Req).
 
 
-% session_call(_Req, _ArgSpec, _Method) ->
-%     implement_this.
-%     case parse_args(Req, [{<<"id">>, uuid, true}|ArgSpec]) of
-%         {ok, [SessionID|Args]} ->
-%             case glchat_sess:find(SessionID) of
-%                 undefined ->
-%                     send_error(Req, "Session does not exist");
-%                 Session ->
-%                     Reply = case Method of
-%                                 poll -> 
-%                                     Ack = case Args of
-%                                               [X] when is_integer(X) -> X;
-%                                               _ -> -1
-%                                           end,
-%                                     {Seq, Messages} = gen_server:call(Session, {poll, Ack}, infinity),
-%                                     {{seq, Seq}, {messages, [list_to_tuple(lists:ukeysort(1, M)) || M <- Messages]}};
-%                                 _ ->
-%                                     gen_server:call(Session, {call, Method, Args}, 30000)
-%                             end,
-%                     send_reply(Req, jsonerl:encode(Reply))
-%             end;
-%         {error, Errors} ->
-%             encode_reply(Req, [{success, false}, {call_errors, Errors}]);
-%         Error ->
-%             ?DBG({call_error, Error}),
-%             send_error(Req, "Internal error")
-%     end.
+% Use when polling.
+% First time we use Ack = -1 to grep all messages.
+% After that we use Ack = 1, 2 to get new push message.
+session_call(Req, ArgSpec, Method) ->
+    case parse_args(Req, [{<<"id">>, uuid, true}|ArgSpec]) of
+        {ok, [SessionID|Args]} ->
+            case glchat_sess:find(SessionID) of
+                undefined ->
+                    send_error(Req, "Session does not exist");
+                Session ->
+                    Reply = case Method of
+                                poll -> 
+                                    Ack = case Args of
+                                              [X] when is_integer(X) -> X;
+                                              _ -> -1
+                                          end,
+                                    {Seq, Messages} = gen_server:call(Session, {poll, Ack}, infinity),
+                                    ?DBG({after_call, Seq, Messages}),
+                                    {{seq, Seq}, {messages, [list_to_tuple(lists:ukeysort(1, M)) || M <- Messages]}};
+                                _ ->
+                                    gen_server:call(Session, {call, Method, Args}, 30000)
+                            end,
+                    send_reply(Req, jsonerl:encode(Reply))
+            end;
+        {error, Errors} ->
+            encode_reply(Req, [{success, false}, {call_errors, Errors}]);
+        Error ->
+            ?DBG({call_error, Error}),
+            send_error(Req, "Internal error")
+    end.
 
 
 unquote(Bin) ->

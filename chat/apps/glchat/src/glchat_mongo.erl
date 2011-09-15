@@ -37,49 +37,49 @@ get_conn() ->
 % ===============================
 % Get chatroom by various methods
 % ===============================
-% get_chat(ChatUUID) ->
-%     Conn = get_conn(),
-%     case Conn:findOne("chat_chat", 
-%                       [{<<"uuid">>, ChatUUID},
-%                        {<<"finished">>, {ne, true}}]) of
-%         {ok, [_|_]=Doc} -> {ok, Doc};
-%         {ok, []} -> {error, not_found}
-%     end.
-%     
-% 
-% get_chat(ChatUUID, ParticipantUUID) ->
-%     Conn = get_conn(),
-%     PartKey = <<"participants.", ParticipantUUID/binary>>,
-%     case Conn:findOne("chat_chat", 
-%                       [{<<"uuid">>, ChatUUID}, 
-%                        {PartKey, {exists, true}}],
-%                       [{PartKey, true}]) of
-%         {ok, [_|_]=Doc} -> 
-%             [{ParticipantUUID, Participant}|_] = ?GV(<<"participants">>, Doc),
-%             {ok, [{<<"chat">>, ChatUUID}|Participant]};
-%         _Other ->
-%             {error, not_participant}
-%     end.
-% 
-% 
-% get_chat_by_session(SessionUUID) ->
-%     Conn = get_conn(),
-%     case Conn:findOne("chat_chat",
-%                       [{<<"sessions.session">>, SessionUUID}],
-%                       [{<<"uuid">>, true}, {<<"sessions">>, true}]) of
-%         {ok, [_|_]=Doc} ->
-%             ChatUUID = ?GV(<<"uuid">>, Doc),
-% 
-%             %% https://jira.mongodb.org/browse/SERVER-828
-%             {array, Sessions} = ?GV(<<"sessions">>, Doc),
-%             {ok, Session} = glchat_util:find_object(Sessions, <<"session">>, SessionUUID),
-%             ParticipantUUID = ?GV(<<"participant">>, Session),
-%             {ok, ChatUUID, ParticipantUUID};
-%         _Other ->
-%             {error, not_found}
-%     end.    
-% 
-% 
+get_chat(ChatUUID) ->
+    Conn = get_conn(),
+    case Conn:findOne("chats_chatroom", 
+                      [{<<"uuid">>, ChatUUID},
+                       {<<"finished">>, {ne, true}}]) of
+        {ok, [_|_]=Doc} -> {ok, Doc};
+        {ok, []} -> {error, not_found}
+    end.
+    
+
+get_chat(ChatUUID, ParticipantUUID) ->
+    Conn = get_conn(),
+    PartKey = <<"participants.", ParticipantUUID/binary>>,
+    case Conn:findOne("chats_chatroom", 
+                      [{<<"uuid">>, ChatUUID}, 
+                       {PartKey, {exists, true}}],
+                      [{PartKey, true}]) of
+        {ok, [_|_]=Doc} -> 
+            [{ParticipantUUID, Participant}|_] = ?GV(<<"participants">>, Doc),
+            {ok, [{<<"chat">>, ChatUUID}|Participant]};
+        _Other ->
+            {error, not_participant}
+    end.
+
+
+get_chat_by_session(SessionUUID) ->
+    Conn = get_conn(),
+    case Conn:findOne("chats_chatroom",
+                      [{<<"sessions.session">>, SessionUUID}],
+                      [{<<"uuid">>, true}, {<<"sessions">>, true}]) of
+        {ok, [_|_]=Doc} ->
+            ChatUUID = ?GV(<<"uuid">>, Doc),
+
+            %% https://jira.mongodb.org/browse/SERVER-828
+            {array, Sessions} = ?GV(<<"sessions">>, Doc),
+            {ok, Session} = glchat_util:find_object(Sessions, <<"session">>, SessionUUID),
+            ParticipantUUID = ?GV(<<"participant">>, Session),
+            {ok, ChatUUID, ParticipantUUID};
+        _Other ->
+            {error, not_found}
+    end.    
+
+
 
 % ===============================
 %       Commit chat message to db

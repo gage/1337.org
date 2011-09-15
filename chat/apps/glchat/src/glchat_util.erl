@@ -64,6 +64,11 @@ parse_args([], [], Values, _Args) ->
     {ok, lists:reverse(Values)};
 parse_args([], Errors, _Values, _Args) ->
     {error, lists:reverse(Errors)};
+    
+% An easy example here:
+% if we have [{<<"id">>, uuid, true}]
+% means: we parse PosetKey <<"id">> in Request, by the Type uuid,
+% and the Required == true - we must have this attribute
 parse_args([{PostKey, Type, Required}|Rest], Errors, Values, Args) ->
     {NewVals, NewErrors} = case {Required, (catch fetch_arg(Type, PostKey, Args))} of
                                {true, undefined} ->

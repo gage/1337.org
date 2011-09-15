@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<a href="#" id="create_chatroom">Create Chatroom</a><br/>
+<a href="#" id="link_chatserver">Link Chat Server</a><br/>
+
+<div id="chatserver_anchor"></div>
+
+<script>
+var ack = -1;
+var chatroom_uuid;
+$("#create_chatroom").click(create_chatroom);
+$("#link_chatserver").click(link_chatserver);
+
+function create_chatroom(e){
+	$.ajax({
+	    url : '{% url create-chatroom %}',
+	    type: 'POST',
+	    data: {title:"Test Chatroom", is_test:true},
+	    dataType : 'json',
+	    success : function (result) {
+			console.log(result.data.uuid);
+			$("#chatserver_anchor").append("Chatroom: "+result.data.uuid+"<br/>");
+			chatroom_uuid = result.data.uuid;
+			$(e.target).slideUp();
+	    }
+	});
+}
+
+function poll(uuid){
+	$.ajax({
+	    url : '/runtime/poll/',
+	    type: 'POST',
+	    data: {ack:ack, id:uuid},
+	    dataType : 'json',
+	    success : function (result) {
+			ack = result.seq;
+			$("#chatserver_anchor").append("Ack: "+result.seq+"<br/>");
+			console.log(result);
+			poll(uuid);
+	    }
+	});
+}
+
+function link_chatserver(e){
+	$.ajax({
+	    url : '/runtime/start/',
+	    type: 'POST',
+	    data: {pid:"{{user.get_profile.get_uuid}}", joins:[chatroom_uuid], subscribes:[]},
+	    dataType : 'json',
+	    success : function (result) {
+			$("#chatserver_anchor").append("uuid in erlang: <span id='uuid'>"+ result.uuid + "</span><br/>");
+			$(e.target).slideUp();
+			poll(uuid=result.uuid);
+	    }
+	});
+}
+
+// link_chatserver();
+
+</script>
+
+
+{% endblock %}

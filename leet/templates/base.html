@@ -13,7 +13,7 @@
     {% block extrahead %}{% endblock %}
 </head>
 <body>
-
+	<!-- FILE: base.html -->
 	<div id='top_bar'>
 		<div id="auth">
 			<ul>
@@ -40,6 +40,7 @@
 			{% endif %}
 			<li> <a href="">Projects </a></li>
 			<li> <a href="/chats/chat_home/">Chat </a></li>
+			<li> <a href="{% url sandbox-test-chat %}">Sandbox </a></li>
 		</ul>
 	</div>
 
