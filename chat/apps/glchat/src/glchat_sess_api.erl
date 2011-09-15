@@ -18,6 +18,14 @@ handle(subscribe, [ChatUUIDs], ParticipantUUID, _UUID) ->
                       || ChatUUID <- ChatUUIDs,
                          ChatUUID /= <<>>],
              Info /= none];
+
+handle(message, [{_ChatUUID, Chat}, Message], ParticipantUUID, _UserID) ->
+    case gen_server:call(Chat, {message, ParticipantUUID, Message}, 30000) of
+        {ok, Seq} ->
+            {{success, true}, {sequence, Seq}};
+        {error, Error} ->
+            {{success, false}, {error, Error}}
+    end;
              
 handle(Method, Args, _ParticipantUUID, _UserID) ->
     ?DBG({unknown_api_call, Method, Args}),

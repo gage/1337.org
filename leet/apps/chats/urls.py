@@ -13,9 +13,7 @@ urlpatterns = patterns('chats.views',
 
 
 urlpatterns += patterns('chats.ajax',
-    url(r'^ajax/create_chatroom/$', 'create_chatroom', name="create-chatroom"),                    
-                        
-                            
-                        
+    url(r'^ajax/create_chatroom/$', 'create_chatroom', name="create-chatroom"),
+    url(r'^ajax/join_chatroom/$', 'join_chatroom', name="join-chatroom"),
                         
 )

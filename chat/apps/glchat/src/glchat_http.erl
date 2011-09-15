@@ -41,8 +41,8 @@ handle('POST', [<<"poll">>], Req) ->
 
 %% -------------- Chat API ----------------
 
-% 1. message
-% 2. history
+handle('POST', [<<"message">>], Req) ->
+    session_call(Req, [{<<"chatid">>, chat, true}, {<<"msg">>, bin, true}], message);
 
 %% -------------- Misc ----------------
     
@@ -106,6 +106,7 @@ session_call(Req, ArgSpec, Method) ->
                                     ?DBG({after_call, Seq, Messages}),
                                     {{seq, Seq}, {messages, [list_to_tuple(lists:ukeysort(1, M)) || M <- Messages]}};
                                 _ ->
+                                    ?DBG({message_send, Method, Args}),
                                     gen_server:call(Session, {call, Method, Args}, 30000)
                             end,
                     send_reply(Req, jsonerl:encode(Reply))

@@ -29,7 +29,6 @@
 % Initial message buffer size
 -define(BUFFER_SIZE, 50).
 
-
 % Module shorthands
 -define(PARTS, glchat_participants).
 
@@ -62,11 +61,10 @@ init([Code]) ->
             %       end,
             %                        
             Seq = 0,
-            Participants = [],
             Messages = [],
             Title = "tmp title",
             URL = "tmp url",
-            % Participants = ?GVD(<<"participants">>, Info, []),
+            Participants = ?GVD(<<"participants">>, Info, []),
             % {array, Messages} = ?GVD(<<"messages">>, Info, {array, []}),
             % 
             % Title = case ?GV(<<"title">>, Info) of
@@ -90,7 +88,13 @@ init([Code]) ->
               url = URL,
               sequence = Seq
             },
-            ?DBG({try_try});
+            ?DBG({try_try}),
+            timer:send_interval(?IDLE_CHECK_TIME, idle_check),
+            IdleTime = ?GV(idle_time, Conf),
+            timer:send_interval(IdleTime * 1000, dispatch_idle),
+            State = dispatch_idle(idle_check(State0)),
+            ?DBG({chat_started, Code}),
+            {ok, State};
             % case State0#state.hungry == true
             %     andalso length(?PARTS:hungry_list(State0#state.participants)) < 2 of
             %     true -> 
@@ -111,27 +115,37 @@ init([Code]) ->
             ?DBG({chat_start_failed, Code, Error}),
             {stop, Error}
     end.
-
     
-% handle_call({join, ParticipantUUID}, _From, State) ->
-%     case glchat_mongo:get_chat(State#state.uuid, ParticipantUUID) of
-%         {ok, Participant} ->
-%             NewParts0 = ?PARTS:ensure(Participant, State#state.participants),
-%             NewParts = ?PARTS:commit(?PARTS:seq(ParticipantUUID, State#state.sequence, NewParts0)),
-%             NewState = State#state{participants=NewParts},
-%             Reply = [{userUUID, ?PARTS:get_field(ParticipantUUID, <<"session_uuid">>, NewParts)},
-%                      {chat, NewState#state.uuid},
-%                      {participants, ?PARTS:public_list(NewParts)},
-%                      {messages, [list_to_tuple(munge_message(M, NewParts)) 
-%                                  || M <- lists:sublist(NewState#state.messages, ?BUFFER_SIZE)]}];
-%         {error, _Error} ->
-%             NewState = State,
-%             Reply = none
-%     end,
-%     {reply, Reply, NewState};
+handle_call({join, ParticipantUUID}, _From, State) ->
+    case glchat_mongo:get_chat(State#state.uuid, ParticipantUUID) of
+        {ok, Participant} ->
+            NewParts = ?PARTS:ensure(Participant, State#state.participants),
+            % NewParts = ?PARTS:commit(?PARTS:seq(ParticipantUUID, State#state.sequence, NewParts0)),
+            NewState = State#state{participants=NewParts},
+            Reply = [{userUUID, ?PARTS:get_field(ParticipantUUID, <<"session_uuid">>, NewParts)},
+                     {chat, NewState#state.uuid},
+                     {participants, ?PARTS:public_list(NewParts)},
+                     % {messages, [list_to_tuple(munge_message(M, NewParts)) 
+                     %             || M <- lists:sublist(NewState#state.messages, ?BUFFER_SIZE)]}];
+                     {messages, []}];
+            
+        {error, _Error} ->
+            NewState = State,
+            Reply = none
+    end,
+    {reply, Reply, NewState};
 % 
 % handle_call({subscribe, ParticipantUUID}, _From, State) ->
 %     participant_call(ParticipantUUID, State, fun handle_seq/2);
+
+
+handle_call({message, ParticipantUUID, Content}, _From, State) ->
+    handle_call({message, ParticipantUUID, Content, true}, _From, State);
+handle_call({message, ParticipantUUID, Content, Touch}, _From, State) ->
+    participant_call(ParticipantUUID, State, 
+                     fun(PartPL, _S) -> 
+                             handle_message(PartPL, ParticipantUUID, Content, Touch, State)
+                     end);
     
 handle_call(Request, _From, State) ->
     ?DBG({unexpected_call, Request}),
@@ -140,6 +154,12 @@ handle_call(Request, _From, State) ->
 handle_cast(Msg, State) ->
     ?DBG({unexpected_cast, Msg}),
     {noreply, State}.
+
+handle_info(idle_check, State) ->
+    {noreply, idle_check(State)};
+
+handle_info(dispatch_idle, State) ->
+    {noreply, dispatch_idle(State)};
 
 handle_info(Info, State) ->
     % Unexpected Input
@@ -157,16 +177,13 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Participant-only method handlers
 %%%===================================================================
 
-participant_call(_ParticipantUUID, State, _Handler) ->
-    % We can implement this. 
-    {reply, {error, not_participant}, State}.
-    
-    % case ?PARTS:find(ParticipantUUID, State#state.participants) of
-    %     error -> 
-    %         {reply, {error, not_participant}, State};
-    %     {ok, PartPL} -> 
-    %         Handler(PartPL, State)
-    % end.
+participant_call(ParticipantUUID, State, Handler) ->
+    case ?PARTS:find(ParticipantUUID, State#state.participants) of
+        error -> 
+            {reply, {error, not_participant}, State};
+        {ok, PartPL} -> 
+            Handler(PartPL, State)
+    end.
 
 handle_seq(PartPL, State) ->
     UserSeq = case dict:find(<<"seen_seq">>, PartPL) of
@@ -176,9 +193,65 @@ handle_seq(PartPL, State) ->
     Diff = State#state.sequence - UserSeq,
     {reply, Diff, State}.
 
+handle_message(_PartPL, ParticipantUUID, Content, Touch, State) ->
+    Seq = State#state.sequence + 1,
+
+    Message = [{<<"sender">>, ParticipantUUID},
+               {<<"created">>, glchat_util:unix_timestamp()},
+               {<<"content">>, Content},
+               {<<"sequence">>, Seq}
+               ],
+
+    UUID = State#state.uuid,
+    % Here we should do message logging and sequence process.
+
+    Title = State#state.title,
+    NewParts = State#state.participants,
+    gproc:send({p, l, UUID}, {push, {message, UUID, Seq}, munge_message(Message, NewParts)}),
+
+    NewState = State#state{
+                 sequence=Seq,
+                 participants=NewParts,
+                 messages=[Message|State#state.messages]},
+
+    {reply, {ok, Seq}, NewState}.
+
+
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
 
+% Process Message
+munge_message(Message, Parts) ->
+    case ?GV(<<"type">>, Message) of
+        <<"broadcast">> ->
+            Message;
+        _ ->
+            SenderUUID = ?GV(<<"sender">>, Message),
+            SessionUUID = glchat_participants:get_field(SenderUUID, <<"session_uuid">>, Parts),
+            [{<<"type">>, <<"message">>},{<<"sender_uuid">>, SessionUUID}|
+             [{K,V} || {K, V} <- Message, K /= <<"sender">>]]
+    end.
+
 % TODO
+idle_check(State) ->
+    {ok, Conf} = application:get_env(chat),
+    InactiveTime = ?GV(inactive_time, Conf),
+    % NewParts = ?PARTS:set_unseen_to_inactive(InactiveTime, State#state.participants),
+    % State#state{participants=NewParts}.
+    State.
+
+dispatch_idle(State) ->
+    {ok, Conf} = application:get_env(chat),
+    IdleTime = ?GV(idle_time, Conf),
+    % NewParts = ?PARTS:dispatch_idle(IdleTime, State#state.messages, 
+    %                                 State#state.title, 
+    %                                 [{url, State#state.url},
+    %                                  {title, State#state.title}],
+    %                                 State#state.participants),
+    % State#state{participants=?PARTS:commit(NewParts)}.
+    State.
+
+
+    
