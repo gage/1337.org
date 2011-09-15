@@ -12,15 +12,19 @@ class UserProfile(models.Model):
     """
     
     # basic
-    user        = models.ForeignKey(User, related_name='profile')
-    hacker_name = models.CharField(max_length=40, null=True, blank=True)
-    avatar      = models.ForeignKey('photos.Photo', null=True, blank=True)
-    uuid        = models.CharField(max_length=40, null=True, blank=True)
-    created     = models.DateTimeField(default=datetime.datetime.now)
+    user            = models.ForeignKey('auth.User', related_name='my_profile')
+    hacker_name     = models.CharField(max_length=40, null=True, blank=True)
+    avatar          = models.ForeignKey('photos.Photo', null=True, blank=True)
+    uuid            = models.CharField(max_length=40, null=True, blank=True)
+    created         = models.DateTimeField(default=datetime.datetime.now)
     
     # info
-    edu_school  = ListField(models.CharField(max_length=24, null=True))
-    edu_dep     = ListField(models.CharField(max_length=24, null=True))
+    introduction    = models.TextField(max_length=1024, null=True, blank=True)
+    edu_school      = ListField(models.CharField(max_length=30, null=True))
+    edu_dep         = ListField(models.CharField(max_length=30, null=True))
+    company         = ListField(models.CharField(max_length=30, null=True))
+    score           = models.FloatField(default=0)
+    skill           = models.ForeignKey('projects.Project', related_name='related_users')
     
     
     
@@ -39,3 +43,18 @@ def create_profile(sender, **kwargs):
         UserProfile.objects.get_or_create(user=kwargs['instance'], uuid=unicode(uuid.uuid4()))
         
 post_save.connect(create_profile, sender=User)
+
+
+class School(models.Model):
+    
+    name    = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        return self.name
+    
+class Department(models.Model):
+    
+    name    = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        return self.name
