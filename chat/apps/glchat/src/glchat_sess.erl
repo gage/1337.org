@@ -248,7 +248,6 @@ send_seqs(#state{seqs=Seqs, sentSeqs=SentSeqs}=State) ->
 
 confirm_seqs(#state{sentSeqs=Seqs}=State) ->
     ParticipantUUID = State#state.participantUUID,
-    ?DBG({Seqs}),
     [gproc:send({n, l, {chat, UUID}}, {seq, ParticipantUUID, Seq})
      || {UUID, Seq} <- gb_trees:to_list(Seqs)],
     State#state{sentSeqs=gb_trees:empty()}.

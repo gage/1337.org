@@ -19,7 +19,7 @@ class ChatParticipant(models.Model):
     # user uuid
     uuid = models.CharField(max_length=32, null=True, blank=True)
     session_uuid = models.CharField(max_length=32, null=True, blank=True)
-    # display_name = models.CharField(max_length=100, null=True, blank=True)
+    display_name = models.CharField(max_length=100, null=True, blank=True)
     # seen_seq = models.IntegerField(null=True, blank=True)
     # last_message_sequence = models.IntegerField(default=-1)
     # active = models.BooleanField(default=True)
@@ -56,6 +56,7 @@ class Chatroom(models.Model):
         participant_info = {
             'uuid': str(profile.get_uuid()),
             'user_id': ObjectId(user.id),
+            'display_name': user.get_profile().get_display_name()
         }
         
         participant = self.get_participant(participant_info['uuid'])

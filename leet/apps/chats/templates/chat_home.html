@@ -27,6 +27,7 @@
 	</div>
 
 <script>
+	var polling_request;
 	$("#chatroom_create_form").submit(function(){
 		var t=$("input:first").val();
 
@@ -57,6 +58,10 @@
             type: "GET",
             dataType: "html",
             success: function(data){
+				if (polling_request){
+					console.log('abort');
+					polling_request.abort();
+				}
                 $("#chat_room_page").html(data);
             }
         });
