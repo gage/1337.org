@@ -13,6 +13,7 @@
 var ack = -1;
 var user_erl_sess_process_id;
 var chatroom_uuid;
+var display_name_dict = {};
 $("#join_chatroom").hide();
 $("#link_chatserver").hide();
 $("#id_msg").hide();
@@ -61,7 +62,10 @@ function poll(uuid){
 			ack = result.seq;
 			if (result.messages.length != 0){
 				var message = result.messages[0].content;
-				$("#chatserver_anchor").append("Msg: "+message+"<br/>");
+				var in_chatroom = result.messages[0].key;
+				var sender_id = result.messages[0].sender_uuid;
+				var sender_name = display_name_dict[in_chatroom][sender_id];
+				$("#chatserver_anchor").prepend(sender_name+": "+message+"<br/>");
 			}
 			console.log(result);
 			poll(uuid);
@@ -80,6 +84,16 @@ function link_chatserver(e){
 			$(e.target).slideUp();
 			$("#id_msg").show();
 			user_erl_sess_process_id=result.uuid;
+			for (var i in result.chats){
+				each_chatroom = result.chats[i];
+				display_name_dict[each_chatroom.chat] = {};
+				for (var j in each_chatroom.participants){
+					each_part = each_chatroom.participants[j];
+					var part_uuid = each_part.uuid;
+					display_name_dict[each_chatroom.chat][part_uuid] = each_part.display_name;
+				}
+			}
+			console.log(display_name_dict);
 			poll(uuid=result.uuid);
 	    }
 	});

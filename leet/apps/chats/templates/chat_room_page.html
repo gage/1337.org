@@ -51,82 +51,95 @@
             }
         }
         var tclr = new title_controller();
+		
+		var chatroom_uuid = "{{room.uuid}}";
+		var ack = -1;
+		var user_erl_sess_process_id;
+		var display_name_dict = {};
+		
+		function join_chatroom(e){
+			$.ajax({
+			    url : '{% url join-chatroom %}',
+			    type: 'POST',
+			    data: {chatroom_uuid:chatroom_uuid},
+			    dataType : 'json',
+			    success : function (result) {
+					link_chatserver();
+			    }
+			});
+		}
 
-        function pull(tt){
+		function poll(uuid){
+			polling_request = $.ajax({
+			    url : '/runtime/poll/',
+			    type: 'POST',
+			    data: {ack:ack, id:uuid},
+			    dataType : 'json',
+			    success : function (result) {
+					ack = result.seq;
+					if (result.messages.length != 0){
+						var from_chatroom_id = result.messages[0].key;
+						if (from_chatroom_id == chatroom_uuid){
+							var message = result.messages[0].content;
+							var sender_id = result.messages[0].sender_uuid;
+							var sender_name = display_name_dict[from_chatroom_id][sender_id];
+							$("#id_chats").prepend(sender_name+": "+message+"<br/>");
+						}						
+					}
+					poll(uuid);
+			    }
+			});
+		}
 
-            if(typeof(pull_request) != "undefined"){
-                pull_request.abort();
-            }
+		function link_chatserver(e){
+			$.ajax({
+			    url : '/runtime/start/',
+			    type: 'POST',
+			    data: {pid:"{{user.get_profile.get_uuid}}", joins:[chatroom_uuid], subscribes:[]},
+			    dataType : 'json',
+			    success : function (result) {
+					user_erl_sess_process_id=result.uuid;
+					for (var i in result.chats){
+						each_chatroom = result.chats[i];
+						display_name_dict[each_chatroom.chat] = {};
+						for (var j in each_chatroom.participants){
+							each_part = each_chatroom.participants[j];
+							var part_uuid = each_part.uuid;
+							display_name_dict[each_chatroom.chat][part_uuid] = each_part.display_name;
+						}
+					}
+					poll(uuid=result.uuid);
+			    }
+			});
+		}
 
-            pull_request = $.ajax({
-                url: '/chatserver/chat/pull/'+chat_room_name+'/'+tt+'/',
-                type: 'GET',
-                dataType: 'json',
-                cache: false,
-                success: function(data){
-                    if(data){
-                        console.log(data);
-                        if(data.messages){
-                            for(var i in data.messages){
-                                var message = data.messages[i];
-                                $('#id_chats').prepend('<li>'+message.username+':'+message.msg+'</li>');
-                            }
-                            if(chat_user_name == message.username){
-                                if(tclr.stop)
-                                    tclr.stop();
-                            }else{
-                                tclr.start(origin_title, message.username+" says:"+message.msg, 2000);
-                            }
-                        }
-                        if(data.timestamp){
-                            timestamp = data.timestamp;
-                            console.log('has data: pull - '+data.timestamp);
-                            setTimeout(function() { pull(data.timestamp); }, 20);
-                        }
-                    }else{
-                        console.log('no data: pull - '+timestamp);
-                        setTimeout(function() { pull(timestamp); }, 20);
-                    }
-                },
-            });
-        }
+		function send_message(){
+		            $.ajax({
+		                url: '/runtime/message/',
+		                type: 'POST',
+		                data: {id:user_erl_sess_process_id, chatid:chatroom_uuid, msg:$('#id_msg').val()},
+		                dataType: 'html',
+		                success: function(data){
+		                    $('#id_msg').val('');
+		                }
+		            });
+		        }
 
-        function send_message(){
-            $.ajax({
-                url: '/chatserver/chat/message/',
-                type: 'POST',
-                data: {room_name:chat_room_name,user_name:chat_user_name,msg:$('#id_msg').val()},
-                dataType: 'html',
-                success: function(data){
-                    console.log(data);
-                    $('#id_msg').val('');
-                }
-            });
-        }
+		$('#id_msg').keypress(function(e){
+		    var code = (e.keyCode ? e.keyCode : e.which);
+		    if(code==13){
+		        send_message();
+		    }
+		}).focus(function(e){
+		    if(typeof(tclr) != "undefined")
+		        if(tclr.stop)
+		            tclr.stop();
+		});
+		
+		join_chatroom();
+		
 
-        function get_time(){
-            $.ajax({
-                url: '/chatserver/chat/get_time/'+chat_room_name+'/',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data){
-                    console.log('get_time');
-                    console.log(data);
-                    pull(data.timestamp);
-                }
-            });
-        }
-        $('#id_msg').keypress(function(e){
-            var code = (e.keyCode ? e.keyCode : e.which);
-            if(code==13){
-                send_message();
-            }
-        }).focus(function(e){
-            if(typeof(tclr) != "undefined")
-                if(tclr.stop)
-                    tclr.stop();
-        });
-        get_time();
+
     });
     </script>
 </div>

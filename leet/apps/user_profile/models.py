@@ -31,6 +31,13 @@ class UserProfile(models.Model):
             self.save()
         return self.uuid
     
+    def get_display_name(self):
+        """ Returns user's hacker_name or username. """
+        if self.hacker_name:
+            return self.hacker_name
+        else:
+            return self.user.username
+    
     def __unicode__(self):
         return self.user.username
 

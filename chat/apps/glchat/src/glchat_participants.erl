@@ -114,7 +114,7 @@ get_field(UUID, Key, Parts, Default) ->
 
 munge_participant(Participant) ->
     [{<<"uuid">>, dict:fetch(<<"session_uuid">>, Participant)},
-     % {<<"display_name">>, dict:fetch(<<"display_name">>, Participant)},
+     {<<"display_name">>, dict:fetch(<<"display_name">>, Participant)},
      {<<"user_id">>, case dict:find(<<"user_id">>, Participant) of 
                          {ok, {oid, OID}} -> OID;
                          {ok, OID} when is_binary(OID) -> OID;
