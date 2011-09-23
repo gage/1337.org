@@ -136,7 +136,7 @@ LEET_APPS = (
     'user_profile',
     'photos',
     'projects',
-    'actstream',
+    #'actstream',
     'threads',
     'sandbox',
     'testing',
