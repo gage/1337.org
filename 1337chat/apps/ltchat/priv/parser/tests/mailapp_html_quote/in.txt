@@ -1,0 +1,57 @@
+Received: from mail1.cogini.com (mail1.cogini.com [124.150.130.76])
+        by ip-10-34-23-86.ec2.internal (Postfix) with ESMTP id B718B4E037
+        for <4281498a-cea9-46ab-99f6-b3979f2ac604@gulumail.com>; Fri, 17 Jun 2011 09:27:59 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by mail1.cogini.com (Postfix) with ESMTP id 24E0FA46F
+        for <4281498a-cea9-46ab-99f6-b3979f2ac604@gulumail.com>; Fri, 17 Jun 2011 09:23:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at cogini.com
+Received: from mail1.cogini.com ([127.0.0.1])
+        by localhost (mail1.cogini.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oYo307uXvxYs
+        for <4281498a-cea9-46ab-99f6-b3979f2ac604@gulumail.com>;
+        Fri, 17 Jun 2011 09:23:31 +0000 (UTC)
+Received: from [192.168.11.44] (220-136-179-84.dynamic.hinet.net [220.136.179.84])
+        (using TLSv1 with cipher AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        by mail1.cogini.com (Postfix) with ESMTPSA id 3EEB2A3C9
+        for <4281498a-cea9-46ab-99f6-b3979f2ac604@gulumail.com>; Fri, 17 Jun 2011 09:23:31 +0000 (UTC)
+From: Brendon Hogger <brendonh@cogini.com>
+Mime-Version: 1.0 (Apple Message framework v1082)
+Content-Type: multipart/alternative; boundary=Apple-Mail-5--716812946
+Subject: Re: Update: 9274c936-8903-4d52-b18f-e248fa7c5d1b
+Date: Fri, 17 Jun 2011 17:27:48 +0800
+In-Reply-To: <000001309c51380b-eda5f205-1bd4-4f93-980a-2f1305889f98-000000@email.amazonses.com>
+To: 4281498a-cea9-46ab-99f6-b3979f2ac604@gulumail.com
+References: <000001309c51380b-eda5f205-1bd4-4f93-980a-2f1305889f98-000000@email.amazonses.com>
+Message-Id: <9B4DB28F-9F6D-41BC-A4DA-5560136089AF@cogini.com>
+X-Mailer: Apple Mail (2.1082)
+
+
+--Apple-Mail-5--716812946
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset=us-ascii
+
+Hello from Mail.app!
+On Jun 17, 2011, at 2:37 PM, chat@gulumail.com wrote:
+
+> New Messages
+> 
+> brendonh5: Bump, give me a digest please. 
+
+
+--Apple-Mail-5--716812946
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
+        charset=us-ascii
+
+<html><head></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; ">Hello from Mail.app!<br><div><div>On Jun 17, 2011, at 2:37 PM, <a href="mailto:chat@gulumail.com">chat@gulumail.com</a> wrote:</div><br class="Apple-interchange-newline"><blockquote type="cite"><p><b>New Messages</b></p><p>
+ 
+   <b>brendonh5</b>:
+   Bump, give me a digest please.
+   <br>
+ 
+</p>
+
+</blockquote></div><br></body></html>
+--Apple-Mail-5--716812946--

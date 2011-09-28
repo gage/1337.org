@@ -1,0 +1,32 @@
+Received: from mail-iw0-f169.google.com (mail-iw0-f169.google.com [209.85.214.169])
+	by ip-10-34-23-86.ec2.internal (Postfix) with ESMTPS id 212854E037
+	for <a@gulumail.com>; Fri, 17 Jun 2011 10:43:14 +0000 (UTC)
+Received: by iwg8 with SMTP id 8so2047690iwg.28
+        for <a@gulumail.com>; Fri, 17 Jun 2011 03:43:13 -0700 (PDT)
+Received: by 10.42.152.70 with SMTP id h6mr1615586icw.141.1308307393751;
+        Fri, 17 Jun 2011 03:43:13 -0700 (PDT)
+Received: from [101.8.194.73] ([101.8.194.73])
+        by mx.google.com with ESMTPS id d8sm2461021icy.9.2011.06.17.03.43.12
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Fri, 17 Jun 2011 03:43:13 -0700 (PDT)
+Subject: Re: ok here's the start
+References: <BANLkTim1rg6HPrCfi7UAcksTT+hR0VF6uw@mail.gmail.com>
+From: Ryan Carag <ryan.carag@geniecapital.com.tw>
+Content-Type: text/plain;
+	charset=big5
+X-Mailer: iPhone Mail (8G4)
+In-Reply-To: <BANLkTim1rg6HPrCfi7UAcksTT+hR0VF6uw@mail.gmail.com>
+Message-Id: <6922D5F9-38AF-414E-83D2-C49D74082527@geniecapital.com.tw>
+Date: Fri, 17 Jun 2011 18:42:41 +0800
+To: a@gulumail.com
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (iPhone Mail 8G4)
+
+One more=20
+
+Sent from my iPhone
+
+On Jun 17, 2011, at 6:13 PM, =BF=BD=B6h=B0=B6 Justin Hsiao<justin.hsiao@geni=
+ecapital.com> wrote:
+
+> randommmmmmmmmm

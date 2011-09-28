@@ -152,6 +152,7 @@ LEET_APPS = (
 INSTALLED_APPS += LEET_APPS
 
 CHAT_SERVER_DOMAIN = ""
+CHAT_SERVER_URL = "http://localhost:8098"
 
 AUTH_PROFILE_MODULE = 'user_profile.UserProfile'
 # A sample logging configuration. The only tangible logging

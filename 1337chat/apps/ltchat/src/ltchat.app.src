@@ -1,0 +1,22 @@
+{application, ltchat,
+ [
+  {description, ""},
+  {vsn, "2"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  lager,
+                  crypto,
+                  gproc,
+                  erlmongo,
+                  cowboy
+                 ]},
+  {mod, { ltchat_app, []}},
+  {env, []},
+
+  {agner, [
+    {requires, ["rebar", "gproc", "jsonerl", "erlmongo", "gen_smtp", "erlydtl"]}
+  ]}
+
+ ]}.

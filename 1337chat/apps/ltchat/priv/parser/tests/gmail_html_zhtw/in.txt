@@ -1,0 +1,79 @@
+Received: from mail-wy0-f169.google.com (mail-wy0-f169.google.com [74.125.82.169])
+	by ip-10-34-23-86.ec2.internal (Postfix) with ESMTPS id C3F414E037
+	for <c98923c6-47af-40e5-8b5a-10f881a0dff5@gulumail.com>; Fri, 17 Jun 2011 10:48:45 +0000 (UTC)
+Received: by wyf19 with SMTP id 19so1791008wyf.28
+        for <c98923c6-47af-40e5-8b5a-10f881a0dff5@gulumail.com>; Fri, 17 Jun 2011 03:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:content-type;
+        bh=JabZw61XlEP9JAO7WKo3hB6QDRYesr/GtXzWku8HBf0=;
+        b=pRYPnHGI+EiKQCp9rmHQbSPmZgcTHzuI9dHfYRsRSsI6+izos1FSeiEdFZZFjDV+c3
+         kU4WvgDY4Imb5s26wdQbx+erGJoS/qxIOdPuL/QyJUy74kDqLJE2BXPA/DKf4CVyxj2O
+         vqLJ7a8NPs+bE0KqYXABXjLm2ySpkGQiUgpRM=
+DomainKey-Signature: a=rsa-sha1; c=nofws;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        b=st7ePhfCNudFLIssXC0/wMGqB0n8ta4Obw49kUsZ8wNpAmNBrr98ADSyOhftQy7LWB
+         0IFC9D5YblZ1WzJJ5/u81ulPeaHUWT9DboUsHl4LQWkycCKD34pqBi6r3nA78reDmpjD
+         aP0X/gAzUW4eJ1smpGxxC5ThMPkxckIByugFk=
+MIME-Version: 1.0
+Received: by 10.216.9.204 with SMTP id 54mr1974564wet.50.1308307724403; Fri,
+ 17 Jun 2011 03:48:44 -0700 (PDT)
+Received: by 10.216.17.211 with HTTP; Fri, 17 Jun 2011 03:48:44 -0700 (PDT)
+In-Reply-To: <000001309ccb4d2b-8a174fca-82f0-4526-ac8b-259414347fb1-000000@email.amazonses.com>
+References: <000001309ccb4d2b-8a174fca-82f0-4526-ac8b-259414347fb1-000000@email.amazonses.com>
+Date: Fri, 17 Jun 2011 18:48:44 +0800
+Message-ID: <BANLkTikc-hiEk67Oua-jM5Hh2eU=zBu6fg@mail.gmail.com>
+Subject: Re: Update: 9274c936-8903-4d52-b18f-e248fa7c5d1b
+From: Brendon Hogger <brendonh@gmail.com>
+To: c98923c6-47af-40e5-8b5a-10f881a0dff5@gulumail.com
+Content-Type: multipart/alternative; boundary=0016364d245f2b868804a5e621ad
+
+--0016364d245f2b868804a5e621ad
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: quoted-printable
+
+Huh what the heck
+
+2011/6/17 <chat@gulumail.com>
+
+> *New Messages*
+>
+> *brendonh5*: Hey Justin
+> *justin.hsiao@geniecapital.com*: =A7=DA=A4]=ADn=A5h
+> *justin.hsiao@geniecapital.com*: hello
+>
+
+--0016364d245f2b868804a5e621ad
+Content-Type: text/html; charset=Big5
+Content-Transfer-Encoding: quoted-printable
+
+Huh what the heck<br><br><div class=3D"gmail_quote">2011/6/17  <span dir=3D=
+"ltr">&lt;<a href=3D"mailto:chat@gulumail.com">chat@gulumail.com</a>&gt;</s=
+pan><br><blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid r=
+gb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<p><b>New Messages</b></p>
+
+<p>
+=20
+   <b>brendonh5</b>:
+   Hey Justin
+   <br>
+=20
+   <b><a href=3D"mailto:justin.hsiao@geniecapital.com" target=3D"_blank">ju=
+stin.hsiao@geniecapital.com</a></b>:
+   =A7=DA=A4]=ADn=A5h
+   <br>
+=20
+   <b><a href=3D"mailto:justin.hsiao@geniecapital.com" target=3D"_blank">ju=
+stin.hsiao@geniecapital.com</a></b>:
+   hello
+   <br>
+=20
+</p>
+
+</blockquote></div><br>
+
+--0016364d245f2b868804a5e621ad--

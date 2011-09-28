@@ -206,6 +206,8 @@ handle_message(_PartPL, ParticipantUUID, Content, Touch, State) ->
 
     Title = State#state.title,
     NewParts = State#state.participants,
+    % I just cannot understand the line below
+    ?DBG({process_id, gproc:lookup_pids({p, l, UUID})}),
     gproc:send({p, l, UUID}, {push, {message, UUID, Seq}, munge_message(Message, NewParts)}),
 
     NewState = State#state{
