@@ -1,0 +1,70 @@
+<div class="type">
+	<table>
+	    <capition>
+	        <h2 class="type_title" ><a name="{{type_title}}"> {{type_title}} </a></h2>
+	    </capition>
+	    <tbody>
+	        <tr>
+	            <th >Name</th>
+	            <th >Display</th>
+	            <th >Description</th>
+	            <th >HTML</th>
+	        </tr>
+	        {% for style in style_set %}
+	        <tr class="{{style.id}} {{style.name}}">
+	            <th scope="row">
+	                {{style.name}}<br>
+	                <a>{{style.file_name}}: {{style.line_number}}</a>
+	                <button class="btn_1_s fR del_btn {{style.id}} desp" style="display:none">Delete</button>
+	            </th>
+	            <td class="display">
+	                <div class="cell_content disp">
+	                    {% if style.html %}
+	                    {% autoescape off %}
+	                    {{style.html}}   
+	                    {% endautoescape %}      
+	                    {% endif %}   
+	                </div>
+	            </td>
+	            <td class="desp">
+	                <div class="cell_content desp">
+	                    {% if style.type %}
+	                    <b>({{style.type}})</b>
+	                    {%endif%}
+	                    {% if style.description %}
+	                    {{style.description}}
+	                    {%endif%}
+	                </div>
+	                {%comment%}<button class="btn_1_s fL edit_btn {{style.id}} desp" style="display:none">Edit</button>{%endcomment%}
+	                <div class="edit_content fL" style="display:none">
+	                    <textarea wrap='off' class="txt fL input_txt">{%if style.description%}{{style.description}}{%endif%}</textarea>
+	                    <button class="btn_1_s fL save_btn {{style.id}} desp">Save</button>
+	                    <button class="btn_1_s fL cancel_btn {{style.id}} desp">Cancel</button>
+	                </div>
+	            </td>
+	            <td class="html">
+	                <div class="cell_content html">
+	                    <div class="code_print" style="display:none">
+	                    {% if style.html %}
+	                    <pre class="prettyprint linenums:5" >{{style.html}}</pre>
+	                    {% endif %}
+	                    </div>
+	                    
+	                    <button class="btn_1_s show_html_btn {{style.id}}" {% if not style.html %}style="display:none"{% endif %}>show</button>
+	                    
+	                    
+	                </div>
+	                <button class="btn_1_s fL edit_btn {{style.id}} html" style="display:none">Edit</button>
+	                <div class="edit_content fL" style="display:none">
+	                    <textarea wrap='off' class="txt fL input_txt">{%if style.html%}{{style.html}}{%endif%}</textarea>
+	                    <button class="btn_1_s fL save_btn {{style.id}} html">Save</button>
+	                    <button class="btn_1_s fL cancel_btn {{style.id}} desp">Cancel</button>
+	                </div>
+	            </td>
+	        </tr>
+	        {% endfor %}
+	        
+	        
+	    </tbody>
+	</table>
+</div>

@@ -26,7 +26,7 @@ DATABASES = {
     'mongodb': {
     	'ENGINE': 'django_mongodb_engine',
     	'NAME': 'leet1337',
-	'POST': 8000,
+	    'POST': 8000,
     	'TEST_NAME': 'test_leet1337',
     },
 }
@@ -146,6 +146,7 @@ LEET_APPS = (
     'actstream',
     'threads',
     'sandbox',
+    'style_pattern',
     'testing',
 )
 

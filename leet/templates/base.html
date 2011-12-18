@@ -2,76 +2,165 @@
 {% load i18n %}
 <html>
 <head>
-    <title>Leet Chat - 1337</title>
-	<link rel="stylesheet/less" href="{{ STATIC_URL }}less/base.less" type="text/css" />
+    <title>{% trans "1337.org" %}</title>
+    <meta charset="utf-8">
+    <meta name="description" content="1337.org">
+    <meta name="keywords" content="1337, leet, hacker">
+    
+	<link rel="stylesheet/less" href="{{ STATIC_URL }}less/import.less" type="text/css" />
     <script src="{{ STATIC_URL }}js/lib/less.js"></script>
 	<script src="{{ STATIC_URL }}js/lib/jquery-1.6.1.min.js"></script>
-	<script src="{{ STATIC_URL }}js/lib/auth.js"></script>
-    <script>
-        var origin_title = document.title;
-    </script>
+	<script src="{{ STATIC_URL }}js/auth.js"></script>
+	
+	<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
     {% block extrahead %}{% endblock %}
 </head>
-<body>
-	<!-- FILE: base.html -->
-	<div id='top_bar'>
-		<div id="auth">
-			<ul>
-				{%if user.is_authenticated %}
-				<li> <a href="">Settings</a> </li>
-				<li> <a href="/registration/accounts/logout/">Log out</a> </li>
-				{%else%}
-				<li> <a href="/registration/accounts/login/">Log in</a> </li>
-				<li> <a href="{% url registration-signup %}">Sign up</a> </li>
-				{% endif %}
-			</ul>
-		</div>
-
-		{%if user.is_authenticated %}
-		<div id="show_user">
-			Logged in as <b><a href="">{{ user.username }}</a></b>
-		</div>
-		{% endif %}
-
-		<ul>
-			<li> <a href="">Home </a></li>
-			{%if user.is_authenticated %}
-			<li> <a href="">Profile </a></li>
-			{% endif %}
-			<li> <a href="">Projects </a></li>
-			<li> <a href="/chats/chat_home/">Chat </a></li>
-			<li> <a href="{% url sandbox-test-chat %}">Sandbox </a></li>
-		</ul>
-	</div>
-
-	<div id='main_body'>
-		<div id='header'>
-			<h1> 1337 Leet</h1>
-		</div>
-
-		<div id='content'>
-			{% block content %}
-			<div id='left_col'>
-				left
-			</div>
-
-			<div id='right_col'>
-				right
-			</div>
-			{% endblock %}
-		</div>
-
-		<div id='footer'>
-			<div id='footer_wrapper'>
-			   <p>© Copyright <a href="http://1337.org.tw/">1337.org</a> 2011</p>
-		       <ul>
-
-		         <li><a href="http://geniecapital.com"><img src="http://1337.org.tw/media/images/F_genie_capital.png" alt="" /></a></li>
-		         <li class="gulu"><a href="http://gulu.com/"><img src="http://1337.org.tw/media/images/F_gulu.png" alt=""/></a></li>
-		       </ul>
-		     </div>
-		</div>
-
-	</div>
+<body class="e_bg_main">
+    <header id="main_hd" class="b_main_hd">
+        <div class="l_grid_980">
+            <a class="e_logo"><img src="{{ STATIC_URL }}images/logo.png" width="103" height="33" alt="1337.org"></a>
+            <div class="b_search_input fR">
+                <input type="text" class="e_search_input">
+                <span class="e_icon_search"></span>
+            </div>
+            <ul class="b_hd_tabs">
+                <li class="e_hd_tab"><a href="#">Sign In</a></li>
+                <li class="e_hd_tab"><a href="#">Create Project</a></li>
+            </ul>
+        </div>
+	</header>
+    
+    <div id="main_bd" class="l_layout_1 l_grid_980 cf">
+    {% block main %}
+        <div class="l_col b_home_col_1">
+            <div class="b_search_tag">
+                <input type="text" class="e_search_tag">
+            </div>
+            <ul class="b_home_box_list_1">
+                <li class="e_home_box"></li>
+                <li class="e_home_box"></li>
+            </ul>
+        </div>
+        <div class="l_col b_home_col_2">
+            <div class="b_search_tag">
+                <input type="text" class="e_search_tag">
+            </div>
+            <ul class="b_home_box_list_1">
+                <li class="e_home_box"></li>
+                <li class="e_home_box"></li>
+            </ul>
+        </div>
+        <div class="l_col b_home_col_3">
+            <div class="b_search_tag">
+                <input type="text" class="e_search_tag">
+            </div>
+            <ul class="b_home_box_list_1">
+                <li class="e_home_box"></li>
+                <li class="e_home_box"></li>
+            </ul>
+        </div>
+        <div class="l_col b_home_col_4">
+            <div class="b_search_tag">
+                <input type="text" class="e_search_tag">
+            </div>
+            <ul class="b_home_box_list_1">
+                <li class="e_home_box"></li>
+                <li class="e_home_box"></li>
+            </ul>
+        </div>
+    {% endblock %}
+    </div>
+    
+    <footer id="main_ft">
+        <table width="100%" style="background-color:#fff;">
+            <tr>
+                <td width="20%">color_bg_1</td>
+                <td width="80%" class="color_bg_1"></td>
+            </tr>
+            <tr>
+                <td>color_bg_2</td>
+                <td class="color_bg_2"></td>
+            </tr>
+            <tr>
+                <td>color_bg_3</td>
+                <td class="color_bg_3"></td>
+            </tr>
+            <tr>
+                <td>color_bg_4</td>
+                <td class="color_bg_4"></td>
+            </tr>
+            <tr>
+                <td>color_bg_5</td>
+                <td class="color_bg_5"></td>
+            </tr>
+            <tr>
+                <td>color_font_1</td>
+                <td class="color_font_1"></td>
+            </tr>
+            <tr>
+                <td>color_font_2</td>
+                <td class="color_font_2"></td>
+            </tr>
+            <tr>
+                <td>color_font_3</td>
+                <td class="color_font_3"></td>
+            </tr>
+            <tr>
+                <td>color_red</td>
+                <td class="color_red"></td>
+            </tr>
+			<tr>
+                <td>color_pink</td>
+                <td class="color_pink"></td>
+            </tr>
+			<tr>
+                <td>color_blue</td>
+                <td class="color_blue"></td>
+            </tr>
+			<tr>
+                <td>color_green</td>
+                <td class="color_green"></td>
+            </tr>
+			<tr>
+                <td>color_cyan</td>
+                <td class="color_cyan"></td>
+            </tr>
+			<tr>
+                <td>color_darkcyan</td>
+                <td class="color_darkcyan"></td>
+            </tr>
+			<tr>
+                <td>color_yellow</td>
+                <td class="color_yellow"></td>
+            </tr>
+			<tr>
+                <td>color_darkyellow</td>
+                <td class="color_darkyellow"></td>
+            </tr>
+			<tr>
+                <td>color_orange</td>
+                <td class="color_orange"></td>
+            </tr>
+			<tr>
+                <td>color_lightorange</td>
+                <td class="color_lightorange"></td>
+            </tr>
+			<tr>
+                <td>color_purple</td>
+                <td class="color_purple"></td>
+            </tr>
+			<tr>
+                <td>color_darkgrey</td>
+                <td class="color_darkgrey"></td>
+            </tr>
+			<tr>
+                <td>color_olive</td>
+                <td class="color_olive"></td>
+            </tr>
+        </table>
+    </footer>
 </body>
 </html>

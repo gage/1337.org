@@ -1,0 +1,63 @@
+/**
+ * background
+ */
+
+/*!
+ * @style: e_bg_hd
+ * @description:
+ * @template:
+ */
+.e_bg_hd{
+    background: url('/static/images/bg_header.png') repeat-x;
+    width:100%;
+    height: 37px;
+}
+
+.e_bg_main{
+	background: url('/static/images/bg_main.png') repeat;
+}
+
+.e_logo{
+    margin-top:2px;
+    display:block;
+    .fL;
+}
+
+.e_search_input{
+    .less_search_input(8px, rgba(255,255,255,0.1), #3a3a3a, #fff);
+}
+
+.e_icon_search{
+    background: url('/static/images/icon_search.png') no-repeat;
+    width: 14px;
+    height: 13px;
+    .display_inline_block;
+}
+
+.e_hd_tab{
+    color: #fff;
+    float: right;
+    a{
+        color:#fff;
+        line-height: 35px;
+        display:block;
+        padding: 0 20px;
+        text-shadow: 0 -1px 1px @color_bg_1;
+        &:hover{color:@color_bg_5;}
+    }
+    border-left: 1px solid #575858;
+    border-left: 1px solid rgba(87,88,88,0.6);
+}
+
+.e_search_tag{
+	.less_search_input(10px ,@color_bg_1, #222, #222, 0px, 1px, 1px, 0px, -1px, 1px);
+}
+
+.e_home_box{
+    .less_border_radius_all(6px);
+    .less_box_shadow(0px, 0px, 4px, #111);
+}
+
+.e_photo_frame_1{
+    .one_bottom_line_frame(@color_darkcyan);
+}

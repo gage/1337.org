@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}style_pattern/js/prettify.js"></script>
+<link href="{{ STATIC_URL }}style_pattern/css/prettify.css" rel="stylesheet" type="text/css" />{% endblock %}
+{% block bodyclass %}style_display{% endblock %}
+{% block main %}
+
+<div id="main_body">
+<div class="col_main">
+    <h1>Style Pattern</h1>
+    <div class="nav">
+        <ul>
+	        <li><a href="#Element">Element</a></li>
+	        <li><a href="#Block">Block</a></li>
+	        <li><a href="#Layout">Layout</a></li>
+	        <li><a href="#Untyped">Untyped</a></li>
+        </ul>
+    </div>
+    <button class="btn_1_s edit_ele_btn">Toggle Edit</button>
+    {% include "inc_style_pattern_table.html" with type_title="Element" style_set=style_set_element%}
+    {% include "inc_style_pattern_table.html" with type_title="Block" style_set=style_set_block%}
+    {% include "inc_style_pattern_table.html" with type_title="Layout" style_set=style_set_layout%}
+    {% include "inc_style_pattern_table.html" with type_title="Untyped" style_set=style_set_null%}
+</div>
+</div>
+
+<script type="text/javascript">
+         $('.show_html_btn').click(function(){
+            var id = $(this).attr('class').split(' ')[2];
+            var name = $('tr.'+id).attr('class').split(' ')[1];
+            systemTxt($(this).closest('td').find('.code_print').clone().html(),
+                      {'title':"Html: "+name,
+                       'hasbtn':false, 
+                       'bg_class':"",
+            });
+            prettyPrint()
+         });
+         
+	     $('.edit_ele_btn').click(function(){
+	        $('.edit_btn').toggle();
+	        $('.del_btn').toggle();
+	     });
+	     
+	     $('.edit_btn').click(function(){
+	        var id = $(this).attr('class').split(' ')[3];
+	        var type = $(this).attr('class').split(' ')[4];
+	        var name = $('tr.'+id).attr('class').split(' ')[1];
+	        systemTxt($(this).closest('td').find('.edit_content').clone().html(),{'title':"Edit "+type+' '+name,'hasbtn':false, "bg_class":""});
+	        return false;
+	     });
+	     
+	     $('.save_btn').live('click', function(){
+	        var id = $(this).attr('class').split(' ')[3];
+	        var type = $(this).attr('class').split(' ')[4];
+	        var content = $(this).parent().find('textarea').val();
+	        $this = $(this);
+	        $.ajax({
+	            type: "POST",
+	            url: "/style_pattern/edit/",
+	            data:{target_id:id, type:type, content:content},
+	            dataType:'json',
+	            success:function(response){
+	                if(response.ok == 1){
+	                    //$this.closest('td').find('.edit_content').hide();
+	                    //$this.closest('td').find('.cell_content').show();
+	                    //location.reload(true);
+	                    if(type == 'desp'){
+	                       $('tr.'+id+' .'+type).find('.cell_content').html(response.new_content);
+	                       $('tr.'+id+' .'+type).find('.input_txt').text(response.new_content);
+	                       $('.bind_close.close').click();
+	                    }else if(type == 'html'){
+	                       $('tr.'+id+' .'+type).find('.code_print').html('<pre class="prettyprint linenums:5"></pre>');
+	                       $('tr.'+id+' .'+type).find('.cell_content .prettyprint').text(response.new_content);
+                           $('tr.'+id+' .'+type).find('.input_txt').text(response.new_content);
+                           $('tr.'+id+' .display').find('.cell_content').html(response.new_content);
+                           $('.show_html_btn.'+id).show();
+                           console.log($('.show_html_btn.'+id))
+                           prettyPrint()         
+                           $('.bind_close.close').click();
+	                    
+	                    }
+	                    
+	                }else{
+	                    systemTxt("update failed.");
+	                }    
+	            },
+	            error: function(xhr){
+	                systemTxt("update failed.");
+	            }
+	        });
+	        return false;
+	     });
+	     
+	     $('.cancel_btn').live('click', function (){
+		        $('.bind_close.close').click();
+	     });
+	     
+	     $('.del_btn').click(function (){
+	            $this = $(this);
+	            confirmTxt("are you sure you want to delete this?", {
+	                callback_click_yes: function(_this){
+		                var id = $this.attr('class').split(' ')[3];
+			            $.ajax({
+			                type: "POST",
+			                url: "/style_pattern/delete/",
+			                data:{target_id:id},
+			                dataType:'json',
+			                success:function(response){
+			                    if(response.ok == 1){
+			                        $('tr.'+id).fadeOut(200,function(){$('tr.'+id).remove()});
+			                    }else{
+			                        systemTxt("delete failed.");
+			                    }    
+			                },
+			                error: function(xhr){
+			                    systemTxt("delete failed.");
+			                }
+			            });
+	                }
+	            });
+		        return false;
+	     });
+     
+</script>
+{% endblock %}
