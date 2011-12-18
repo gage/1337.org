@@ -32,7 +32,7 @@
 			{%if user.is_authenticated %}
 			<li> <a href="">Profile </a></li>
 			{% endif %}
-			<li> <a href="">Projects </a></li>
+			<li> <a href="{% url create-project %}">Projects </a></li>
 			<li> <a href="/chats/chat_home/">Chat </a></li>
 		</ul>
 	</div>

@@ -31,7 +31,6 @@ class Project(models.Model):
     version     = models.CharField(max_length=50, null=True, blank=True)
     wanted      = models.TextField(max_length=1024, null=True, blank=True)
     git_url     = models.TextField(null=True, blank=True)
-    is_tech     = models.BooleanField(default=False)
     urls        = ListField(EmbeddedModelField('globals.UrlLink'))
     
     # media
@@ -77,7 +76,7 @@ class Media(models.Model):
     
     project     = models.ForeignKey('projects.Project')
     photo       = models.ForeignKey('photos.Photo', null=True, blank=True)
-    video       = models.TextField(null=True)
+#    video       = models.TextField(null=True)
     type        = models.IntegerField(null=True, blank=True, choices=MEDIA_TYPE)
     is_feature  = models.BooleanField(default=False)
     created     = models.DateTimeField(default=datetime.datetime.now)
