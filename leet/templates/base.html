@@ -33,7 +33,7 @@
 			<li> <a href="">Profile </a></li>
 			{% endif %}
 			<li> <a href="/blog/">Blog </a></li>
-			<li> <a href="">Projects </a></li>
+			<li> <a href="{% url create-project %}">Projects </a></li>
 		</ul>
 	</div>
 
@@ -67,7 +67,7 @@
 		</div>
         {% endblock %}
 	</div>
-	
+
 	<script src="{{ STATIC_URL }}js/lib/less.js"></script>
     <script src="{{ STATIC_URL }}js/lib/jquery-1.6.1.min.js"></script>
     <script src="{{ STATIC_URL }}js/lib/auth.js"></script>

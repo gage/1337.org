@@ -174,6 +174,7 @@ LEET_APPS = (
     'testing',
     'basic.inlines',
     'basic.blog',
+    'jobs',
 )
 
 INSTALLED_APPS += LEET_APPS
