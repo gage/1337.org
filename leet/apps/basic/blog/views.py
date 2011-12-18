@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.conf import settings
 
 from basic.blog.models import *
-from basic.tools.constants import STOP_WORDS_RE
+from basic.tools.constants import STOP_WORDS
 from tagging.models import Tag, TaggedItem
 
 
@@ -163,14 +163,19 @@ def search(request, template_name='blog/post_search.html'):
     """
     context = {}
     if request.GET:
-        stop_word_list = re.compile(STOP_WORDS_RE, re.IGNORECASE)
+        stop_word_list = re.compile(STOP_WORDS, re.IGNORECASE)
         search_term = '%s' % request.GET['q']
         cleaned_search_term = stop_word_list.sub('', search_term)
         cleaned_search_term = cleaned_search_term.strip()
         if len(cleaned_search_term) != 0:
-            post_list = Post.objects.published().filter(Q(title__icontains=cleaned_search_term) | Q(body__icontains=cleaned_search_term) | Q(tags__icontains=cleaned_search_term) | Q(categories__title__icontains=cleaned_search_term))
+            post_list = Post.objects.published().filter(Q(title__icontains=cleaned_search_term) | Q(body__icontains=cleaned_search_term) | Q(tags__icontains=cleaned_search_term))# | Q(categories__title__icontains=cleaned_search_term))
             context = {'object_list': post_list, 'search_term':search_term}
         else:
             message = 'Search term was too vague. Please try again.'
             context = {'message':message}
+    return render_to_response(template_name, context, context_instance=RequestContext(request))
+
+def blog_home(request, template_name='blog/post_list.html'):
+    post_list = Post.objects.published()
+    context = {'object_list': post_list}
     return render_to_response(template_name, context, context_instance=RequestContext(request))

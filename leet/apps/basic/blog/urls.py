@@ -39,7 +39,7 @@ urlpatterns = patterns('basic.blog.views',
         name='blog_index_paginated'
     ),
     url(r'^$',
-        view='post_list',
+        view='blog_home',
         name='blog_index'
     ),
 )

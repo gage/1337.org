@@ -2,11 +2,11 @@
 {% load i18n %}
 <html>
 <head>
-    <title>Leet Chat - 1337</title>
+    <title>{% block title %}Leet Chat - 1337{% endblock %}</title>
 	<link rel="stylesheet/less" href="{{ STATIC_URL }}less/base.less" type="text/css" />
     {% block extrahead %}{% endblock %}
 </head>
-<body>
+<body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
 	<!-- FILE: base.html -->
 	<div id='top_bar'>
 		<div id="auth">
@@ -32,14 +32,15 @@
 			{%if user.is_authenticated %}
 			<li> <a href="">Profile </a></li>
 			{% endif %}
+			<li> <a href="/blog/">Blog </a></li>
 			<li> <a href="">Projects </a></li>
-			<li> <a href="/chats/chat_home/">Chat </a></li>
 		</ul>
 	</div>
 
 	<div id='main_body'>
+	    {% block body %}
 		<div id='header'>
-			<h1> 1337 Leet</h1>
+			<h1>{% block content_title %}1337 Leet{% endblock %}</h1>
 		</div>
 
 		<div id='content'>
@@ -64,7 +65,7 @@
 		       </ul>
 		     </div>
 		</div>
-
+        {% endblock %}
 	</div>
 	
 	<script src="{{ STATIC_URL }}js/lib/less.js"></script>

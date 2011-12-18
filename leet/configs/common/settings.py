@@ -156,11 +156,13 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.comments',
     'django.contrib.staticfiles',
+    'django.contrib.markup',
 
     #3rd party
     'autoload',
     'dbindexer',
     'djangotoolbox',
+    'tagging',
 )
 
 LEET_APPS = (

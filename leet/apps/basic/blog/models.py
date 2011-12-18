@@ -46,7 +46,7 @@ class Post(models.Model):
     publish = models.DateTimeField(_('publish'), default=datetime.datetime.now)
     created = models.DateTimeField(_('created'), auto_now_add=True)
     modified = models.DateTimeField(_('modified'), auto_now=True)
-    categories = models.ManyToManyField(Category, blank=True)
+#    categories = models.ManyToManyField(Category, blank=True)
     tags = TagField()
     objects = PublicManager()
 

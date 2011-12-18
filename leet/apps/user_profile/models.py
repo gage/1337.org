@@ -19,7 +19,7 @@ class UserProfile(models.Model):
     # info
     introduction    = models.TextField(max_length=1024, null=True, blank=True)
     edu             = ListField(models.CharField(max_length=30, null=True))
-    experience      = models.CharField(max_length=20, null=True, blank=True)
+    experience      = ListField(models.CharField(max_length=30, null=True))
     score           = models.FloatField(default=0)
     skill           = models.ForeignKey('projects.Project', related_name='related_users', null=True, blank=True)
     
