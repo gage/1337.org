@@ -7,6 +7,13 @@ from django.dispatch.dispatcher import receiver
 from django.test import TestCase
 from django.utils import unittest
 
+def count_calls(func):
+    def wrapper(*args, **kwargs):
+        wrapper.calls += 1
+        return func(*args, **kwargs)
+    wrapper.calls = 0
+    return wrapper
+
 class Target(models.Model):
     index = models.IntegerField()
 
@@ -15,14 +22,15 @@ class Source(models.Model):
     index = models.IntegerField()
 
 class ListModel(models.Model):
+    integer = models.IntegerField(primary_key=True)
     floating_point = models.FloatField()
-    names = ListField(models.CharField(max_length=500))
+    names = ListField(models.CharField)
     names_with_default = ListField(models.CharField(max_length=500), default=[])
     names_nullable = ListField(models.CharField(max_length=500), null=True)
 
 class OrderedListModel(models.Model):
     ordered_ints = ListField(models.IntegerField(max_length=500), default=[],
-                             ordering=lambda x: x, null=True)
+                             ordering=count_calls(lambda x:x), null=True)
     ordered_nullable = ListField(ordering=lambda x:x, null=True)
 
 class SetModel(models.Model):
@@ -31,19 +39,22 @@ class SetModel(models.Model):
 supports_dicts = getattr(connections['default'].features, 'supports_dicts', False)
 if supports_dicts:
     class DictModel(models.Model):
-        dictfield = DictField(models.IntegerField())
+        dictfield = DictField(models.IntegerField)
         dictfield_nullable = DictField(null=True)
         auto_now = DictField(models.DateTimeField(auto_now=True))
 
     class EmbeddedModelFieldModel(models.Model):
         simple = EmbeddedModelField('EmbeddedModel', null=True)
+        simple_untyped = EmbeddedModelField(null=True)
         typed_list = ListField(EmbeddedModelField('SetModel'))
+        typed_list2 = ListField(EmbeddedModelField('EmbeddedModel'))
         untyped_list = ListField(EmbeddedModelField())
         untyped_dict = DictField(EmbeddedModelField())
+        ordered_list = ListField(EmbeddedModelField(), ordering=lambda obj: obj.index)
 
     class EmbeddedModel(models.Model):
         some_relation = models.ForeignKey(DictModel, null=True)
-        someint = models.IntegerField()
+        someint = models.IntegerField(db_column='custom')
         auto_now = models.DateTimeField(auto_now=True)
         auto_now_add = models.DateTimeField(auto_now_add=True)
 
@@ -54,13 +65,13 @@ class FilterTest(TestCase):
 
     def setUp(self):
         for i, float in enumerate(FilterTest.floats):
-            ListModel(floating_point=float, names=FilterTest.names[:i+1]).save()
+            ListModel(integer=i+1, floating_point=float, names=FilterTest.names[:i+1]).save()
 
     def test_startswith(self):
-        self.assertEquals([entity.names for entity in
-                           ListModel.objects.filter(names__startswith='Sa')],
-                          [['Kakashi', 'Naruto', 'Sasuke',],
-                            ['Kakashi', 'Naruto', 'Sasuke', 'Sakura',]])
+        self.assertEquals(dict([(entity.pk, entity.names) for entity in
+                           ListModel.objects.filter(names__startswith='Sa')]),
+                          dict([(3, ['Kakashi', 'Naruto', 'Sasuke',]),
+                            (4, ['Kakashi', 'Naruto', 'Sasuke', 'Sakura',]), ]))
 
     def test_options(self):
         self.assertEqual([entity.names_with_default for entity in
@@ -77,40 +88,51 @@ class FilterTest(TestCase):
         self.assertEqual(ListModel().names_with_default, [])
 
     def test_ordering(self):
-        OrderedListModel(ordered_ints=self.unordered_ints).save()
+        f = OrderedListModel._meta.fields[1]
+        f.ordering.calls = 0
+
+        # ensure no ordering happens on assignment
+        obj = OrderedListModel()
+        obj.ordered_ints = self.unordered_ints
+        self.assertEqual(f.ordering.calls, 0)
+
+        obj.save()
         self.assertEqual(OrderedListModel.objects.get().ordered_ints,
                          sorted(self.unordered_ints))
+        # ordering should happen only once, i.e. the order function may be
+        # called N times at most (N being the number of items in the list)
+        self.assertLessEqual(f.ordering.calls, len(self.unordered_ints))
 
     def test_gt(self):
         # test gt on list
-        self.assertEquals([entity.names for entity in
-                           ListModel.objects.filter(names__gt='Kakashi')],
-                          [[u'Kakashi', u'Naruto',],
-                            [u'Kakashi', u'Naruto', u'Sasuke',],
-                            [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]])
+        self.assertEquals(dict([(entity.pk, entity.names) for entity in
+                           ListModel.objects.filter(names__gt='Kakashi')]),
+                          dict([(2, [u'Kakashi', u'Naruto',]),
+                            (3, [u'Kakashi', u'Naruto', u'Sasuke',]),
+                            (4, [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]), ]))
 
     def test_lt(self):
         # test lt on list
-        self.assertEquals([entity.names for entity in
-                           ListModel.objects.filter(names__lt='Naruto')],
-                          [[u'Kakashi',], [u'Kakashi', u'Naruto',],
-                            [u'Kakashi', u'Naruto', u'Sasuke',],
-                            [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]])
+        self.assertEquals(dict([(entity.pk, entity.names) for entity in
+                           ListModel.objects.filter(names__lt='Naruto')]),
+                          dict([(1, [u'Kakashi',]), (2, [u'Kakashi', u'Naruto',]),
+                            (3, [u'Kakashi', u'Naruto', u'Sasuke',]),
+                            (4, [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]), ]))
 
     def test_gte(self):
         # test gte on list
-        self.assertEquals([entity.names for entity in
-                           ListModel.objects.filter(names__gte='Sakura')],
-                          [[u'Kakashi', u'Naruto', u'Sasuke',],
-                            [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]])
+        self.assertEquals(dict([(entity.pk, entity.names) for entity in
+                           ListModel.objects.filter(names__gte='Sakura')]),
+                          dict([(3, [u'Kakashi', u'Naruto', u'Sasuke',]),
+                            (4, [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]), ]))
 
     def test_lte(self):
         # test lte on list
-        self.assertEquals([entity.names for entity in
-                           ListModel.objects.filter(names__lte='Kakashi')],
-                          [[u'Kakashi',], [u'Kakashi', u'Naruto',],
-                            [u'Kakashi', u'Naruto', u'Sasuke',],
-                            [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]])
+        self.assertEquals(dict([(entity.pk, entity.names) for entity in
+                           ListModel.objects.filter(names__lte='Kakashi')]),
+                          dict([(1, [u'Kakashi',]), (2, [u'Kakashi', u'Naruto',]),
+                            (3, [u'Kakashi', u'Naruto', u'Sasuke',]),
+                            (4, [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]), ]))
 
     def test_equals(self):
         # test equality filter on list
@@ -128,11 +150,11 @@ class FilterTest(TestCase):
             names__isnull=True).count(), 0)
 
     def test_exclude(self):
-        self.assertEquals([entity.names for entity in
+        self.assertEquals(dict([(entity.pk, entity.names) for entity in
                            ListModel.objects.all().exclude(
-                            names__lt='Sakura')],
-                          [[u'Kakashi', u'Naruto', u'Sasuke',],
-                           [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]])
+                            names__lt='Sakura')]),
+                          dict([(3, [u'Kakashi', u'Naruto', u'Sasuke',]),
+                           (4, [u'Kakashi', u'Naruto', u'Sasuke', u'Sakura',]), ]))
 
     def test_chained_filter(self):
         self.assertEquals([entity.names for entity in
@@ -173,11 +195,14 @@ class FilterTest(TestCase):
         self.assertNotEqual(dt, None)
         item.save()
         self.assertGreater(DictModel.objects.get().auto_now['a'], dt)
-        # This shouldn't raise an error becaues the default value is
-        # an empty dict
-        DictModel().save()
+        item.delete()
 
-    @unittest.skip('Fails with GAE SDK, but passes on production')
+        # Saving empty dicts shouldn't throw errors
+        DictModel().save()
+        # Regression tests for djangoappengine issue #39
+        DictModel.add_to_class('new_dict_field', DictField())
+        DictModel.objects.get()
+
     def test_Q_objects(self):
         self.assertEquals([entity.names for entity in
             ListModel.objects.exclude(Q(names__lt='Sakura') | Q(names__gte='Sasuke'))],
@@ -205,6 +230,13 @@ class ProxyTest(TestCase):
         self.assertRaises(DatabaseError, lambda: list(ExtendedModelProxy.objects.all()))
 
 class EmbeddedModelFieldTest(TestCase):
+    def assertEqualDatetime(self, d1, d2):
+        """ Compares d1 and d2, ignoring microseconds """
+        self.assertEqual(d1.replace(microsecond=0), d2.replace(microsecond=0))
+
+    def assertNotEqualDatetime(self, d1, d2):
+        self.assertNotEqual(d1.replace(microsecond=0), d2.replace(microsecond=0))
+
     def _simple_instance(self):
         EmbeddedModelFieldModel.objects.create(simple=EmbeddedModel(someint='5'))
         return EmbeddedModelFieldModel.objects.get()
@@ -214,27 +246,89 @@ class EmbeddedModelFieldTest(TestCase):
         self.assertIsInstance(instance.simple, EmbeddedModel)
         # Make sure get_prep_value is called:
         self.assertEqual(instance.simple.someint, 5)
-        # AutoFields' values should not be populated:
+        # Primary keys should not be populated...
         self.assertEqual(instance.simple.id, None)
-
-    def test_pre_save(self):
-        # Make sure field.pre_save is called
-        instance = self._simple_instance()
-        self.assertNotEqual(instance.simple.auto_now, None)
-        self.assertNotEqual(instance.simple.auto_now_add, None)
-        auto_now = instance.simple.auto_now
-        auto_now_add = instance.simple.auto_now_add
+        # ... unless set explicitly.
+        instance.simple.id = instance.id
         instance.save()
         instance = EmbeddedModelFieldModel.objects.get()
+        self.assertEqual(instance.simple.id, instance.id)
+
+    def _test_pre_save(self, instance, get_field):
+        # Make sure field.pre_save is called for embedded objects
+        from time import sleep
+        instance.save()
+        auto_now = get_field(instance).auto_now
+        auto_now_add = get_field(instance).auto_now_add
+        self.assertNotEqual(auto_now, None)
+        self.assertNotEqual(auto_now_add, None)
+
+        sleep(1) # FIXME
+        instance.save()
+        self.assertNotEqualDatetime(get_field(instance).auto_now,
+                                    get_field(instance).auto_now_add)
+
+        instance = EmbeddedModelFieldModel.objects.get()
+        instance.save()
         # auto_now_add shouldn't have changed now, but auto_now should.
-        self.assertEqual(instance.simple.auto_now_add, auto_now_add)
-        self.assertGreater(instance.simple.auto_now, auto_now)
+        self.assertEqualDatetime(get_field(instance).auto_now_add, auto_now_add)
+        self.assertGreater(get_field(instance).auto_now, auto_now)
+
+    def test_pre_save(self):
+        obj = EmbeddedModelFieldModel(simple=EmbeddedModel())
+        self._test_pre_save(obj, lambda instance: instance.simple)
+
+    def test_pre_save_untyped(self):
+        obj = EmbeddedModelFieldModel(simple_untyped=EmbeddedModel())
+        self._test_pre_save(obj, lambda instance: instance.simple_untyped)
+
+    def test_pre_save_in_list(self):
+        obj = EmbeddedModelFieldModel(untyped_list=[EmbeddedModel()])
+        self._test_pre_save(obj, lambda instance: instance.untyped_list[0])
+
+    def test_pre_save_in_dict(self):
+        obj = EmbeddedModelFieldModel(untyped_dict={'a': EmbeddedModel()})
+        self._test_pre_save(obj, lambda instance: instance.untyped_dict['a'])
+
+    def test_pre_save_list(self):
+        # Also make sure auto_now{,add} works for embedded object *lists*.
+        EmbeddedModelFieldModel.objects.create(typed_list2=[EmbeddedModel()])
+        instance = EmbeddedModelFieldModel.objects.get()
+
+        auto_now = instance.typed_list2[0].auto_now
+        auto_now_add = instance.typed_list2[0].auto_now_add
+        self.assertNotEqual(auto_now, None)
+        self.assertNotEqual(auto_now_add, None)
+
+        instance.typed_list2.append(EmbeddedModel())
+        instance.save()
+        instance = EmbeddedModelFieldModel.objects.get()
+
+        self.assertEqualDatetime(instance.typed_list2[0].auto_now_add, auto_now_add)
+        self.assertGreater(instance.typed_list2[0].auto_now, auto_now)
+        self.assertNotEqual(instance.typed_list2[1].auto_now, None)
+        self.assertNotEqual(instance.typed_list2[1].auto_now_add, None)
+
+    def test_error_messages(self):
+        for kwargs, expected in (
+            ({'simple' : 42}, EmbeddedModel),
+            ({'simple_untyped' : 42}, models.Model),
+            ({'typed_list': [EmbeddedModel()]}, SetModel)
+        ):
+            self.assertRaisesRegexp(
+                TypeError, "Expected instance of type %r" % expected,
+                EmbeddedModelFieldModel(**kwargs).save
+            )
 
     def test_typed_listfield(self):
         EmbeddedModelFieldModel.objects.create(
-            typed_list=[SetModel(setfield=range(3)), SetModel(setfield=range(9))]
+            typed_list=[SetModel(setfield=range(3)), SetModel(setfield=range(9))],
+            ordered_list=[Target(index=i) for i in xrange(5, 0, -1)]
         )
-        self.assertIn(5, EmbeddedModelFieldModel.objects.get().typed_list[1].setfield)
+        obj = EmbeddedModelFieldModel.objects.get()
+        self.assertIn(5, obj.typed_list[1].setfield)
+        self.assertEqual([target.index for target in obj.ordered_list],
+                         range(1, 6))
 
     def test_untyped_listfield(self):
         EmbeddedModelFieldModel.objects.create(untyped_list=[
@@ -265,9 +359,11 @@ class EmbeddedModelFieldTest(TestCase):
         self.assertNotIn('some_relation', simple.__dict__)
         self.assertIsInstance(simple.__dict__['some_relation_id'], type(obj.id))
         self.assertIsInstance(simple.some_relation, DictModel)
+
 EmbeddedModelFieldTest = unittest.skipIf(
     not supports_dicts, "Backend doesn't support dicts")(
     EmbeddedModelFieldTest)
+
 
 class SignalTest(TestCase):
     def test_post_save(self):

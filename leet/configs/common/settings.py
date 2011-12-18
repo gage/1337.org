@@ -10,8 +10,14 @@ TEMPLATE_DEBUG = DEBUG
 DJANGO_ROOT = os.path.dirname( os.path.realpath( django.__file__ ) )
 SITE_ROOT = os.path.dirname( os.path.dirname( os.path.dirname( os.path.realpath( __file__ ) ) ) )
 
+SITE_DOMAIN = '1337.org'
+
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Justin Hsiao', 'justin.hsiao@geniecapital.com'),
+    ('Gage Tseng', 'gage.tseng@geniecapital.com'),
+    ('Jason Ke', 'jason.ke@geniecapital.com'),
+    ('Sean Cheng', 'sean.cheng@geniecapital.com'),
+    ('Eric Lee', 'eric.lee@geniecapital.com.tw'),
 )
 
 MANAGERS = ADMINS
@@ -26,10 +32,17 @@ DATABASES = {
     'mongodb': {
     	'ENGINE': 'django_mongodb_engine',
     	'NAME': 'leet1337',
-	'POST': 8000,
+	    'POST': 8000,
     	'TEST_NAME': 'test_leet1337',
     },
 }
+
+AUTOLOAD_SITECONF = 'dbindexes'
+DBINDEXER_BACKENDS = (
+    'dbindexer.backends.BaseResolver',
+    'dbindexer.backends.FKNullFix',
+    'dbindexer.backends.ConstantFieldJOINResolver',
+)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -38,11 +51,11 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Asia/Taipei'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-tw'
 
 #SITE_ID = 1
 
@@ -56,12 +69,12 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -106,7 +119,19 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
+#    'globals.context_processors.global_common',
+)
+
 MIDDLEWARE_CLASSES = (
+    'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,19 +144,21 @@ ROOT_URLCONF = 'leet.configs.common.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
- )
+)
 
 INSTALLED_APPS = (
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.comments',
     'django.contrib.admin',
+    'django.contrib.comments',
+    'django.contrib.staticfiles',
 
     #3rd party
+    'autoload',
     'dbindexer',
     'djangotoolbox',
 )
@@ -139,20 +166,18 @@ INSTALLED_APPS = (
 LEET_APPS = (
     'globals',
     'registration',
-    'chats',
     'user_profile',
     'photos',
     'projects',
-    'actstream',
-    'threads',
-    'sandbox',
     'testing',
+    'basic.inlines',
+    'basic.blog',
 )
 
 INSTALLED_APPS += LEET_APPS
 
-CHAT_SERVER_DOMAIN = ""
-CHAT_SERVER_URL = "http://localhost:8098"
+### MongoDB
+MONGODB_AUTOMATIC_REFERENCING = True
 
 AUTH_PROFILE_MODULE = 'user_profile.UserProfile'
 # A sample logging configuration. The only tangible logging

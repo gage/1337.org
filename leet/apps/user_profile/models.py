@@ -1,4 +1,3 @@
-import uuid
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
@@ -15,25 +14,14 @@ class UserProfile(models.Model):
     user            = models.ForeignKey('auth.User', related_name='my_profile')
     hacker_name     = models.CharField(max_length=40, null=True, blank=True)
     avatar          = models.ForeignKey('photos.Photo', null=True, blank=True)
-    uuid            = models.CharField(max_length=40, null=True, blank=True)
     created         = models.DateTimeField(default=datetime.datetime.now)
     
     # info
     introduction    = models.TextField(max_length=1024, null=True, blank=True)
-    edu_school      = ListField(models.CharField(max_length=30, null=True))
-    edu_dep         = ListField(models.CharField(max_length=30, null=True))
-    company         = ListField(models.CharField(max_length=30, null=True))
+    edu             = ListField(models.CharField(max_length=30, null=True))
+    experience      = models.CharField(max_length=20, null=True, blank=True)
     score           = models.FloatField(default=0)
     skill           = models.ForeignKey('projects.Project', related_name='related_users', null=True, blank=True)
-    
-    
-    
-    def get_uuid(self):
-        """ Returns this user's uuid.  Creates one if not available. """
-        if not self.uuid:
-            self.uuid = unicode(uuid.uuid4())
-            self.save()
-        return self.uuid
     
     def get_display_name(self):
         """ Returns user's hacker_name or username. """
@@ -47,21 +35,44 @@ class UserProfile(models.Model):
 
 def create_profile(sender, **kwargs):
     if kwargs['created'] == True:        
-        UserProfile.objects.get_or_create(user=kwargs['instance'], uuid=unicode(uuid.uuid4()))
+        UserProfile.objects.get_or_create(user=kwargs['instance'])
         
 post_save.connect(create_profile, sender=User)
 
 
 class School(models.Model):
     
-    name    = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     
     def __unicode__(self):
         return self.name
     
 class Department(models.Model):
     
-    name    = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     
     def __unicode__(self):
         return self.name
+
+class Edu(models.Model):
+    
+    school = models.ForeignKey('user_profile.School')
+    dep    = models.ForeignKey('user_profile.Department')
+    
+    def __unicode__(self):
+        return '%s %s' % (self.school, self.dep)
+
+class Company(models.Model):
+    
+    name = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        return self.name
+    
+class Experience(models.Model):
+    
+    company   = models.ForeignKey('user_profile.Company')
+    job_title = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return '%s %s' % (self.company, self.job_title)

@@ -4,12 +4,6 @@
 <head>
     <title>Leet Chat - 1337</title>
 	<link rel="stylesheet/less" href="{{ STATIC_URL }}less/base.less" type="text/css" />
-    <script src="{{ STATIC_URL }}js/lib/less.js"></script>
-	<script src="{{ STATIC_URL }}js/lib/jquery-1.6.1.min.js"></script>
-	<script src="{{ STATIC_URL }}js/lib/auth.js"></script>
-    <script>
-        var origin_title = document.title;
-    </script>
     {% block extrahead %}{% endblock %}
 </head>
 <body>
@@ -40,7 +34,6 @@
 			{% endif %}
 			<li> <a href="">Projects </a></li>
 			<li> <a href="/chats/chat_home/">Chat </a></li>
-			<li> <a href="{% url sandbox-test-chat %}">Sandbox </a></li>
 		</ul>
 	</div>
 
@@ -73,5 +66,11 @@
 		</div>
 
 	</div>
+	
+	<script src="{{ STATIC_URL }}js/lib/less.js"></script>
+    <script src="{{ STATIC_URL }}js/lib/jquery-1.6.1.min.js"></script>
+    <script src="{{ STATIC_URL }}js/lib/auth.js"></script>
+    {% block extrabottom %}{% endblock %}
+    {% block bottomscripts %}{% endblock %}
 </body>
 </html>

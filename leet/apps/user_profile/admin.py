@@ -6,7 +6,7 @@ from django.contrib import admin
 from user_profile.models import UserProfile
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'get_uuid')
+    list_display = ('user', )
     raw_id_fields = ('user', )
     list_per_page = 100
     

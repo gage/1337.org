@@ -6,7 +6,6 @@ from .resolver import resolver
 from djangotoolbox.fields import ListField
 from datetime import datetime
 import re
-from django.utils.unittest import skip
 
 class ForeignIndexed2(models.Model):
     name_fi2 = models.CharField(max_length=500)
@@ -27,7 +26,6 @@ class Indexed(models.Model):
 # TODO: add test for foreign key with multiple filters via different and equal paths
 # to do so we have to create some entities matching equal paths but not matching
 # different paths
-@skip
 class TestIndexed(TestCase):
     def setUp(self):
         self.backends = list(resolver.backends)
@@ -180,6 +178,9 @@ class TestIndexed(TestCase):
     def test_delete_query(self):
         Indexed.objects.all().delete()
         self.assertEqual(0, Indexed.objects.all().filter(name__iexact='itaChi').count())
+
+    def test_exists_query(self):
+        self.assertTrue(Indexed.objects.filter(name__iexact='itaChi').exists())
 
     def test_istartswith(self):
         self.assertEqual(1, len(Indexed.objects.all().filter(name__istartswith='iTa')))
