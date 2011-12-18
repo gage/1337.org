@@ -24,7 +24,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-    	'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'dbindexer',
+        'TARGET': 'mongodb',
         'NAME': 'leet1337',
         'TEST_NAME': 'test_leet1337',
     },

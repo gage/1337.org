@@ -1,5 +1,5 @@
-from basic import blog
-from dbindexer.api import register_index 
+#from apps.basic.blog import Post
+#from dbindexer.api import register_index
 #register_index(blog.Post, {'publish': 'year'}) 
 #register_index(blog.Post, {'publish': 'month'}) 
 #register_index(blog.Post, {'publish': 'day'})
