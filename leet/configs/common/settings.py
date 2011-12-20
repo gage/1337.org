@@ -164,6 +164,7 @@ INSTALLED_APPS = (
     'dbindexer',
     'djangotoolbox',
     'tagging',
+    'message',
 )
 
 LEET_APPS = (

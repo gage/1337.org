@@ -10,4 +10,10 @@ class OneTimeUpdateMiddleware(object):
             User.objects.create_user(username='AnonymousUser', email='anonymous@site.com', \
                                      password=uuid.uuid4())
             print 'Create AnonymousUser'
-        
+        # from message.models import Message
+        # from django.contrib.comments.models import Comment
+        # message = Message.objects.all()[0]        
+        # user_list = set(User.objects.all().exclude(username='AnonymousUser').values_list('id', flat=True))
+        # message.add_members(user_list)
+        # message.save()
+        # print message.members
