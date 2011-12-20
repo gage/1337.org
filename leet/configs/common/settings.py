@@ -137,6 +137,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'globals.middleware.OneTimeUpdateMiddleware',
 )
 
 ROOT_URLCONF = 'leet.configs.common.urls'
@@ -175,6 +176,7 @@ LEET_APPS = (
     'basic.inlines',
     'basic.blog',
     'jobs',
+    'team',
 )
 
 INSTALLED_APPS += LEET_APPS
